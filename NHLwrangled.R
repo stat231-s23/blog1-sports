@@ -23,10 +23,12 @@ nhlcountrynames <- nhl %>%
 
 
 
+#add points per game to the skaters
+nhlcountrynames1 <- nhlcountrynames %>%
+  mutate(ppg = points/games_played)
 
-
-#take draft data so players are a minimum 5 years removed from being drafted
-nhlpost2000to2017years <- nhlcountrynames %>%
+#take draft data so players are a minimum 5 years removed from being drafted and in the 21century
+nhlpost2000to2017years <- nhlcountrynames1 %>%
   filter(year < 2018)%>%
   filter(year > 1999)
 
@@ -41,6 +43,11 @@ nhlmosteffective <- nhlrelevant %>%
 
 
 #make variable that multiplies pick in draft to winshares
-nhlmosteffective1 <- nhlmosteffective %>%
+nhlmosteffectivetotal1 <- nhlmosteffective %>%
   mutate(valueofpick = winshares * overall_pick)%>%
   arrange(desc(valueofpick))
+
+#make variable that multiplies pick in draft to winshares
+nhlmosteffectiveskater1 <- nhlmosteffectivetotal1 %>%
+  mutate(valueofskater = winshares * overall_pick * ppg)%>%
+  arrange(desc(valueofskater))
