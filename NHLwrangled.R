@@ -73,6 +73,21 @@ nhlmosteffectiveskater1 <- nhlmosteffectivetotal1 %>%
   arrange(desc(valueofskater))
 
 # combine the map to the countries 
-nationalitymap <- world_map %>%
-  left_join(nhlmosteffectiveskater1, by = c("ID" = "nationality"), multiple = "all")%>%
+nationalitymap <- nhlmosteffectiveskater1 %>%
+  left_join(world_map, by = c("nationality" = "ID"), multiple = "all")%>%
   mutate_if(is.numeric, ~replace_na(.,0))
+
+
+#summarize into countries
+countryranking <- nationalitymap %>%
+  group_by(nationality, geom) %>%
+  summarise(avgpickvalue = mean(valueofskater, na.rm = TRUE))%>%
+  arrange(desc(avgpickvalue))
+
+#make graph to represent graph of best valued picks
+ggplot(countryranking, aes(geometry = geom, fill = avgpickvalue)) +
+  geom_sf() +
+  theme_void() +
+  labs(fill = "Value Of Pick Ranking"
+       , title = "Best Valued Picks"
+       , caption = "Source: From Base R package 538")
