@@ -72,22 +72,35 @@ nhlmosteffectiveskater1 <- nhlmosteffectivetotal1 %>%
   mutate(valueofskater = winshares * overall_pick * ppg)%>%
   arrange(desc(valueofskater))
 
-# combine the map to the countries 
-nationalitymap <- nhlmosteffectiveskater1 %>%
+# combine the map to the countries for sskaters
+worldtotalmap <- nhlmosteffectiveskater1 %>%
   left_join(world_map, by = c("nationality" = "ID"), multiple = "all")%>%
   mutate_if(is.numeric, ~replace_na(.,0))
 
 
 #summarize into countries
-countryranking <- nationalitymap %>%
+playerworldranking <- worldtotalmap %>%
+  filter(position != "G")%>%
   group_by(nationality, geom) %>%
   summarise(avgpickvalue = mean(valueofskater, na.rm = TRUE))%>%
   arrange(desc(avgpickvalue))
+  
 
-#make graph to represent graph of best valued picks
-ggplot(countryranking, aes(geometry = geom, fill = avgpickvalue)) +
+#make graph to represent graph of best valued picks for skaters
+ggplot(playerworldranking, aes(geometry = geom, fill = avgpickvalue)) +
   geom_sf() +
   theme_void() +
   labs(fill = "Value Of Pick Ranking"
-       , title = "Best Valued Picks"
-       , caption = "Source: From Base R package 538")
+       , title = "Best Valued Picks")
+
+# make a plot for where the best valued goalies stem from
+goaliedata <- nhlmosteffectivetotal1 %>%
+  filter(position == "G")%>%
+  select(year, overall_pick, team, player, nationality, games_played, 
+         goalie_wins, goalie_losses, point_shares, save_percentage, 
+         goals_against_average, valueofpick)%>%
+  mutate(winpct = goalie_wins/games_played)
+
+goalieworldmap <- goaliedata %>%
+  left_join(world_map, by = c("nationality" = "ID"), multiple = "all")%>%
+  mutate_if(is.numeric, ~replace_na(.,0))
