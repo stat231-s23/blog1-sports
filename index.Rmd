@@ -1,7 +1,7 @@
 ---
-title: "Your Project Title Here"
+title: "An Analysis of Draft Picks In the NHL, NFL, NBA "
 author: "Joshua Burke, Olivia Stewart, Sriyash Singhania"
-date: "Add a date"
+date: "\\today"
 output:
   rmdformats::readthedown:
     highlight: "kate"
@@ -22,7 +22,7 @@ library(tidyverse)
 
 # Intro
 
-This is an R Markdown blog template. This document will be knit to HTML to produce a webpage that will be hosted publicly via GitHub.
+In this project, our group set out to take a more in-depth analysis of draft picks over the last 20 years of three of the four major sports leagues in North America. We aimed to see what what places produced the best picks and then what teams in the leagues are the ones making the best valued picks.
 
 ## Website publication work flow
 
