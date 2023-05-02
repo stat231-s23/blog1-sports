@@ -131,12 +131,12 @@ ggplot(nfl_final, aes(geometry=geom, fill = Overall)) +
          theme(legend.position="bottom") +
   scale_fill_distiller(palette = "Spectral", direction = 1) 
 
-#table overall picks, school, nfl team, position, year 
-scatterplot(Overall ~ Year | Round, data=nfl_final, 
-            xlab="Weight of Car", ylab="Miles Per Gallon", 
-            main="Enhanced Scatter Plot")
-
-hist(nfl_final$Overall)
-
-
+#user interactive table 
+library(DT)
+nfl_final %>% 
+  select(Name, Position, Overall, School, Year,) %>% 
+  datatable(colnames = c("Name", "Position", "Overall Draft Pick", "School", "Year"),
+            rownames = head(nfl_final),
+            filter = 'top',
+            options = list(pageLength = 10, autoWidth = TRUE))
 

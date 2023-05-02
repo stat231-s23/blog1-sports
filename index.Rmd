@@ -337,7 +337,15 @@ ggplot(nfl_final, aes(geometry=geom, fill = Overall)) +
        , title = "  U.S. College Football Athletes Drafted in the First Round (from 2006 to 2021)") +
          theme(legend.position="bottom") +
   scale_fill_distiller(palette = "Spectral", direction = 1) 
-
+  
+#user interactive table 
+library(DT)
+nfl_final %>% 
+  select(Name, Position, Overall, School, Year,) %>% 
+  datatable(colnames = c("Name", "Position", "Overall Draft Pick", "School", "Year"),
+            rownames = head(nfl_final),
+            filter = 'top',
+            options = list(pageLength = 10, autoWidth = TRUE))
 
 
 Visualizations, particularly interactive ones, will be well-received. That said, do not overuse visualizations. You may be better off with one complicated but well-crafted visualization as opposed to many quick-and-dirty plots. Any plots should be well-thought-out, properly labeled, informative, and visually appealing.
