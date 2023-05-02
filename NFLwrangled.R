@@ -4,6 +4,7 @@ library(maps)
 library(tidyverse)
 library(sf)
 library(ggplot2)
+library(car)
 
 #import the NFL draft dataset
 nfl <- read_csv("dataforNFL/nfl_draft_picks.csv")
@@ -116,7 +117,7 @@ state_info <- data.frame(state_full = tolower(state.name)
 #add full name of states to NFL dataset and merge with mapping dataset
 nfl_final <- nfl_with_states %>%
   left_join(state_info, by = "state_cd") %>%
-  inner_join(states_map, by = c("state_full"="ID"))
+  right_join(states_map, by = c("state_full"="ID"))
 
 #create plot on US country map
 ggplot(nfl_final, aes(geometry=geom, fill = Overall)) +
@@ -130,5 +131,12 @@ ggplot(nfl_final, aes(geometry=geom, fill = Overall)) +
          theme(legend.position="bottom") +
   scale_fill_distiller(palette = "Spectral", direction = 1) 
 
-#looking at how a player's college/university affects their pick and which NFL 
-#team they are drafted to#
+#table overall picks, school, nfl team, position, year 
+scatterplot(Overall ~ Year | Round, data=nfl_final, 
+            xlab="Weight of Car", ylab="Miles Per Gallon", 
+            main="Enhanced Scatter Plot")
+
+hist(nfl_final$Overall)
+
+
+
