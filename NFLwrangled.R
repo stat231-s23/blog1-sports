@@ -121,7 +121,7 @@ nfl_final <- nfl_with_states %>%
 
 #create plot on US country map
 ggplot(nfl_final, aes(geometry=geom, fill = Overall)) +
-  geom_sf(color = "lightgrey") +
+  geom_sf(color = "black") +
   theme_void() +
   labs(fill = "Overall Draft Pick (1-32)"
        , frame.colour = "black"
