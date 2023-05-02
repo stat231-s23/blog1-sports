@@ -30,34 +30,6 @@ library(car)
 
 In this project, our group set out to take a more in-depth analysis of draft picks over the last 20 years of three of the four major sports leagues in North America. We aimed to see what what places produced the best picks and then what teams in the leagues are the ones making the best valued picks. We pulled our dataset for the [NHL](https://www.kaggle.com/datasets/mattop/nhl-draft-hockey-player-data-1963-2022), [NBA](https://www.kaggle.com/datasets/benwieland/nba-draft-data), and the [NFL](https://www.kaggle.com/datasets/jacklichtenstein/espn-nfl-draft-prospect-data?select=nfl_draft_prospects.csv) from Kaggle. 
 
-## Website publication work flow
-
-1. Edit Rmd
-
-2. Knit to HTML to view progress. You may need to click "Open in Browser" for some content to show (sometimes content won't show until you actually push your changes to GitHub and view the published website).
-
-3. Commit and push changes when you are ready. The website may take a couple minutes to update automatically after the push, but you may need to clear your browser's cache or view the page in a private/incognito window to see the changes more quickly. 
-
-# Content
-
-You can include text, `code`, and output as usual. Remember to take full advantage of Markdown and follow our [Style Guide](https://acstat231-f22.github.io/home/style-guide.html#Text_narration).
-
-```{r include=FALSE}
-ggplot(data = cars, aes(x = speed, y = dist)) + 
-  geom_point() + 
-  labs(x = "Speed of car (mph)",
-       y = "Distance taken to stop (ft)",
-       title = "Stopping distance increases with faster speeds",
-       subtitle = "Based on 1920s study") +
-  theme_classic()
-#ggplot-example, fig.align="left", out.width="100%"
-```
-
-Examples and additional guidance are provided below. 
-
-Take note of the the default code chunk options in the `setup` code chunk. For example, unlike the rest of the Rmd files we worked in this semester, the default code chunk option is `echo = FALSE`, so you will need to set `echo  = TRUE` for any code chunks you would like to display in the blog. You should be thoughtful and intentional about the code you choose to display. 
-
-
 # NHL 
 
 ```{r include=FALSE}
@@ -124,6 +96,7 @@ nhlmosteffectivetotal1 <- nhlmosteffective %>%
   arrange(desc(valueofpick))
 ```
 
+
 ```{r echo=FALSE, message=FALSE}
 #This data is only representative of skaters
 #make variable that multiplies pick in draft to winshares
@@ -153,6 +126,8 @@ ggplot(playerworldranking, aes(geometry = geom, fill = avgpickvalue)) +
        , title = "Best Valued Skater Picks Based on Home Country")+
   scale_fill_viridis(option = "magma", direction = -1)
 ```
+
+
 ```{r echo=FALSE, message=FALSE}
 # make a plot for where the best valued goalies stem from
 goaliedata <- nhlmosteffectivetotal1 %>%
@@ -179,6 +154,8 @@ ggplot(goalieworldranking, aes(geometry = geom, fill = avgpickvalue)) +
        , title = "Best Valued Goaltender Picks Based on Home Country")+
   scale_fill_viridis(option = "magma", direction = -1)
 ```
+
+
 ```{r echo=FALSE}
 #add points per game to the skaters
 nhlppg <- nhl %>%
