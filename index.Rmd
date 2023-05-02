@@ -21,6 +21,7 @@ library(maps)
 library(sf)
 library(kableExtra)
 library(DT)
+library(viridis)
 
 ```
 
@@ -148,7 +149,8 @@ ggplot(playerworldranking, aes(geometry = geom, fill = avgpickvalue)) +
   geom_sf() +
   theme_void() +
   labs(fill = "Value Of Pick Ranking"
-       , title = "Best Valued Skater Picks Based on Home Country")
+       , title = "Best Valued Skater Picks Based on Home Country")+
+  scale_fill_viridis(option = "magma", direction = -1)
 ```
 ```{r echo=FALSE, message=FALSE}
 # make a plot for where the best valued goalies stem from
@@ -173,7 +175,8 @@ ggplot(goalieworldranking, aes(geometry = geom, fill = avgpickvalue)) +
   geom_sf() +
   theme_void() +
   labs(fill = "Value Of Pick Ranking"
-       , title = "Best Valued Goaltender Picks Based on Home Country")
+       , title = "Best Valued Goaltender Picks Based on Home Country")+
+  scale_fill_viridis(option = "magma", direction = -1)
 ```
 ```{r echo=FALSE}
 #add points per game to the skaters
