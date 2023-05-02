@@ -91,7 +91,7 @@ ggplot(playerworldranking, aes(geometry = geom, fill = avgpickvalue)) +
   geom_sf() +
   theme_void() +
   labs(fill = "Value Of Pick Ranking"
-       , title = "Best Valued Picks")
+       , title = "Best Valued Skater Picks Based on Home Country")
 
 # make a plot for where the best valued goalies stem from
 goaliedata <- nhlmosteffectivetotal1 %>%
@@ -115,7 +115,7 @@ ggplot(goalieworldranking, aes(geometry = geom, fill = avgpickvalue)) +
   geom_sf() +
   theme_void() +
   labs(fill = "Value Of Pick Ranking"
-       , title = "Best Valued Picks")
+       , title = "Best Valued Goaltender Picks Based on Home Country")
 
 
 
