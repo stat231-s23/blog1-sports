@@ -58,7 +58,7 @@ Take note of the the default code chunk options in the `setup` code chunk. For e
 
 
 # NHL 
-
+For my dataset I decide to start off by looking at the players who 
 ```{r include=FALSE}
 #initial importing of the file
 #import the nhl draft dataset
@@ -121,9 +121,13 @@ nhlmosteffective <- nhlrelevant %>%
 nhlmosteffectivetotal1 <- nhlmosteffective %>%
   mutate(valueofpick = winshares * overall_pick)%>%
   arrange(desc(valueofpick))
+
+nhltableraw <- nhlmosteffectivetotal1 %>%
+  select(year, overall_pick, team, player, nationality, position, age, amateur_team, games_played, )
+
 ```
 
-```{r echo=FALSE, message=FALSE}
+```{r echo=FALSE, message=FALSE, fig.height= 3}
 #This data is only representative of skaters
 #make variable that multiplies pick in draft to winshares
 nhlmosteffectiveskater1 <- nhlmosteffectivetotal1 %>%
@@ -150,9 +154,10 @@ ggplot(playerworldranking, aes(geometry = geom, fill = avgpickvalue)) +
   theme_void() +
   labs(fill = "Value Of Pick Ranking"
        , title = "Best Valued Skater Picks Based on Home Country")+
-  scale_fill_viridis(option = "magma", direction = -1)
+  scale_fill_viridis(option = "magma", direction = -1)+
+  theme(legend.position = "top")
 ```
-```{r echo=FALSE, message=FALSE}
+```{r echo=FALSE, message=FALSE, fig.height=3}
 # make a plot for where the best valued goalies stem from
 goaliedata <- nhlmosteffectivetotal1 %>%
   filter(position == "G")%>%
@@ -176,7 +181,8 @@ ggplot(goalieworldranking, aes(geometry = geom, fill = avgpickvalue)) +
   theme_void() +
   labs(fill = "Value Of Pick Ranking"
        , title = "Best Valued Goaltender Picks Based on Home Country")+
-  scale_fill_viridis(option = "magma", direction = -1)
+  scale_fill_viridis(option = "magma", direction = -1)+
+  theme(legend.position = "top")
 ```
 ```{r echo=FALSE}
 #add points per game to the skaters
