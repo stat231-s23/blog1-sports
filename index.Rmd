@@ -29,33 +29,6 @@ library(viridis)
 
 In this project, our group set out to take a more in-depth analysis of draft picks over the last 20 years of three of the four major sports leagues in North America. We aimed to see what what places produced the best picks and then what teams in the leagues are the ones making the best valued picks. We pulled our dataset for the [NHL](https://www.kaggle.com/datasets/mattop/nhl-draft-hockey-player-data-1963-2022), [NBA](https://www.kaggle.com/datasets/benwieland/nba-draft-data), and the [NFL](https://www.kaggle.com/datasets/jacklichtenstein/espn-nfl-draft-prospect-data?select=nfl_draft_prospects.csv) from Kaggle. 
 
-## Website publication work flow
-
-1. Edit Rmd
-
-2. Knit to HTML to view progress. You may need to click "Open in Browser" for some content to show (sometimes content won't show until you actually push your changes to GitHub and view the published website).
-
-3. Commit and push changes when you are ready. The website may take a couple minutes to update automatically after the push, but you may need to clear your browser's cache or view the page in a private/incognito window to see the changes more quickly. 
-
-# Content
-
-You can include text, `code`, and output as usual. Remember to take full advantage of Markdown and follow our [Style Guide](https://acstat231-f22.github.io/home/style-guide.html#Text_narration).
-
-```{r include=FALSE}
-ggplot(data = cars, aes(x = speed, y = dist)) + 
-  geom_point() + 
-  labs(x = "Speed of car (mph)",
-       y = "Distance taken to stop (ft)",
-       title = "Stopping distance increases with faster speeds",
-       subtitle = "Based on 1920s study") +
-  theme_classic()
-#ggplot-example, fig.align="left", out.width="100%"
-```
-
-Examples and additional guidance are provided below. 
-
-Take note of the the default code chunk options in the `setup` code chunk. For example, unlike the rest of the Rmd files we worked in this semester, the default code chunk option is `echo = FALSE`, so you will need to set `echo  = TRUE` for any code chunks you would like to display in the blog. You should be thoughtful and intentional about the code you choose to display. 
-
 
 # NHL 
 For my dataset I decide to start off by looking at the players who 
@@ -122,8 +95,8 @@ nhlmosteffectivetotal1 <- nhlmosteffective %>%
   mutate(valueofpick = winshares * overall_pick)%>%
   arrange(desc(valueofpick))
 
-nhltableraw <- nhlmosteffectivetotal1 %>%
-  select(year, overall_pick, team, player, nationality, position, age, amateur_team, games_played, )
+
+  
 
 ```
 
@@ -155,8 +128,11 @@ ggplot(playerworldranking, aes(geometry = geom, fill = avgpickvalue)) +
   labs(fill = "Value Of Pick Ranking"
        , title = "Best Valued Skater Picks Based on Home Country")+
   scale_fill_viridis(option = "magma", direction = -1)+
-  theme(legend.position = "top")
+  theme(legend.position = "bottom")
 ```
+
+
+
 ```{r echo=FALSE, message=FALSE, fig.height=3}
 # make a plot for where the best valued goalies stem from
 goaliedata <- nhlmosteffectivetotal1 %>%
@@ -182,8 +158,10 @@ ggplot(goalieworldranking, aes(geometry = geom, fill = avgpickvalue)) +
   labs(fill = "Value Of Pick Ranking"
        , title = "Best Valued Goaltender Picks Based on Home Country")+
   scale_fill_viridis(option = "magma", direction = -1)+
-  theme(legend.position = "top")
+  theme(legend.position = "bottom")
 ```
+
+
 ```{r echo=FALSE}
 #add points per game to the skaters
 nhlppg <- nhl %>%
@@ -207,12 +185,10 @@ nhlteamranking <- nhleffectiveness %>%
 ```
 ## Analysis
 
-You can include [links](https://www.datadreaming.org/post/r-markdown-theme-gallery/) using Markdown syntax as shown. 
-
-You should include links to relevant sites as you write. You should additionally include a list of references as the end of your blog with full citations (and relevant links).
 
 
 # NFL 
+```{r echo=FALSE, message=FALSE}
 library(maps)
 library(tidyverse)
 library(sf)
@@ -343,7 +319,7 @@ ggplot(nfl_final, aes(geometry=geom, fill = Overall)) +
        , title = "  U.S. College Football Athletes Drafted in the First Round (from 2006 to 2021)") +
          theme(legend.position="bottom") +
   scale_fill_distiller(palette = "Spectral", direction = 1) 
-
+```
 
 
 Visualizations, particularly interactive ones, will be well-received. That said, do not overuse visualizations. You may be better off with one complicated but well-crafted visualization as opposed to many quick-and-dirty plots. Any plots should be well-thought-out, properly labeled, informative, and visually appealing.
@@ -360,13 +336,6 @@ If you want to include dynamic visualizations or tables, you should explore your
 You may embed a published Shiny app in your blog if useful, but be aware that there is a limited window size for embedded objects, which tends to makes the user experience of the app worse relative to a dedicated Shiny app page. Additionally, Shiny apps will go idle after a few minutes and have to be reloaded by the user, which may also affect the user experience. 
 
 Any Shiny apps embedded in your blog should be accompanied by the link to the published Shiny app (I did this using a figure caption in the code chunk below, but you don't have to incorporate the link in this way).
-
-#{r ds-salaries-app, out.width = "100%", out.extra = 'data-external="1" frameborder="no"', fig.cap = "[Data Science Salaries Shiny #App](https://bebailey.shinyapps.io/data-science-salaries)"}
-#knitr::include_app("https://bebailey.shinyapps.io/data-science-salaries",
-#                   height = "500px")
-#```
-
-#
 
 # NBA
 
