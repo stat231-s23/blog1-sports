@@ -240,8 +240,6 @@ The NFL draft process occurs when NFL teams pick players, often attending and pl
 The data below represents the NFL draft process over a fifteen year period (2006 to 2021). Including in this data included players' names, school they attended, NFL team they were drafted to, the overall pick of each player (ranged 1-32), and the year players were drafted. The map below specifically looks at players' colleges and universities in states across the country and that players' corresponding overall pick number. 
 
 
-
-
 ```{r include=FALSE}
 #import the NFL draft dataset
 nfl <- read_csv("dataforNFL/nfl_draft_picks.csv")
