@@ -227,12 +227,19 @@ Another observation I derived from the first map was in regards to the powerhous
 
 Out of these countries it appears that the Czech Republic and Russia are at the top of the rankings while the rest of the countries have a similar average value. This is interesting to me because when it comes to international play the United States and Canada are always pretty dominant so it would be expected that they have the best valued picks. I believe that this is not the case because when it comes to scouting the U.S. born and the Canadian born players there is a vast array of work against the best talents that scouts can see while with the international players there are fewer games and sometimes not against as good of talent seen in North America. There is another factor that could play a role in the result. When players get drafted from overseas there is always the risk that they will not come to the United States to play hockey and there are many factors for this. Some have already signed pro contracts in their respective homes and are legally required to stay overseas for a few years. Others have fallen in the draft because of threats from their country to come over and play. So because they fal in the draft they might have the same production and talent as those at the top but are ranked higher in the metric because they were drafted lower.
 
+In the second graph that described goalies, the number for value of pick is much higher because points per game is not included and goalies are usually taken later in the draft. The results showed that Switzerland led the pack. 
+
+In terms of powerhouse teams no real country stood out from the pack. The only result that did stand out to me was Russia being at the bottom of the leaderboard. This was surprising to me because in the NHL currently a lot of the top goalies are from Russia, but as made apparent from the map this was not always the case and in recent years there has been a shift in the development of Russian goaltending for them to produce better goaltenders.
+
+
 
 # NFL 
 
 The NFL draft process occurs when NFL teams pick players, often attending and playing in colleges and universities across the country. The pattern that most typically occurs is the best college football players in the country are often picked in the first couple of rounds. For example, the first player picked in the first round of the draft is likely very talented and highly sought-after. A player’s performance at their college or university is an important consideration for how likely, or quickly they will be picked by an NFL team. Something to consider when looking at players drafted in the NFL, and their corresponding college, is whether there are certain college football teams that produce some of the first picks in the NFL draft. Throughout this analysis we can determine which U.S. states produce some of the top overall NFL draft picks over fifteen years. This information can help us identify states with the top college football players, as well as determine if there are any correlations between the state a player went to school in and the NFL team they were drafted to. 
 
 The data below represents the NFL draft process over a fifteen year period (2006 to 2021). Including in this data included players' names, school they attended, NFL team they were drafted to, the overall pick of each player (ranged 1-32), and the year players were drafted. The map below specifically looks at players' colleges and universities in states across the country and that players' corresponding overall pick number. 
+
+
 
 
 ```{r include=FALSE}
