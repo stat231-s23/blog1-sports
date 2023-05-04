@@ -373,7 +373,8 @@ nfl_final %>%
 
 #Final Thoughts Of Results
 
-
+#References
+https://www.hockey-reference.com/about/point_shares.html
  
 
 
