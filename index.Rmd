@@ -212,6 +212,21 @@ nhlteamranking%>%
 
 ## Analysis of Results
 
+These three graph visualizations gave me some interesting data about the NHL and the value of the picks in the draft.
+
+The first map shows us the skaters and although it may be difficult to see Belarus leads the NHL in producing players with the best valued picks. This was surprising to me because as an avid hockey fan I don’t necessarily look at Belarus as a hotspot for hockey players and have not heard of many that have originated there. But upon a further look in the data this is only the case because there are only two successful NHL players that have originated from Belarus and one was extremely successful so this could be a reason the data shows Belarus at the top.
+
+Another observation I derived from the first map was in regards to the powerhouse countries. I consider the powerhouse countries to be:
+
+- United States
+- Canada
+- Russia
+- Sweden 
+- Finland
+- Czech Republic
+
+Out of these countries it appears that the Czech Republic and Russia are at the top of the rankings while the rest of the countries have a similar average value. This is interesting to me because when it comes to international play the United States and Canada are always pretty dominant so it would be expected that they have the best valued picks. I believe that this is not the case because when it comes to scouting the U.S. born and the Canadian born players there is a vast array of work against the best talents that scouts can see while with the international players there are fewer games and sometimes not against as good of talent seen in North America. There is another factor that could play a role in the result. When players get drafted from overseas there is always the risk that they will not come to the United States to play hockey and there are many factors for this. Some have already signed pro contracts in their respective homes and are legally required to stay overseas for a few years. Others have fallen in the draft because of threats from their country to come over and play. So because they fal in the draft they might have the same production and talent as those at the top but are ranked higher in the metric because they were drafted lower.
+
 
 # NFL 
 
@@ -371,9 +386,9 @@ nfl_final %>%
   
 
 
-#Final Thoughts Of Results
+# Final Thoughts Of Results
 
-#References
+# References
 https://www.hockey-reference.com/about/point_shares.html
  
 
