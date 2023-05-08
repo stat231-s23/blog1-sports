@@ -24,11 +24,13 @@ library(DT)
 library(viridis)
 library(ggplot2)
 library(car)
+library(plotly)
 ```
+INSERT PHOTO
 
 # Intro
 
-In this project, our group set out to take a more in-depth analysis of draft picks over the last 20 years of three of the four major sports leagues in North America. We aimed to see what what places produced the best picks and then what teams in the leagues are the ones making the best valued picks. We pulled our dataset for the [NHL](https://www.kaggle.com/datasets/mattop/nhl-draft-hockey-player-data-1963-2022), [NBA](https://www.kaggle.com/datasets/benwieland/nba-draft-data), and the [NFL](https://www.kaggle.com/datasets/jacklichtenstein/espn-nfl-draft-prospect-data?select=nfl_draft_prospects.csv) from Kaggle. 
+In this project, our group set out to take a more in-depth analysis of draft picks over the last 20 years of three of the four major sports leagues in North America. Since different sports leagues conduct their drafts in different fashions we decided to evaluate each sport differently to fit how the draft process is designed. In terms of each sport the NHL drafts players at the age of 18 and players are usually a few years away from being ready to play in the NHL. In the NBA, players have to be at least 19 years old to be drafted and once they are drafted they usually are meant to go directly to the NBA. For the NFL, the rules are that a player has to be out of high school for three years or has used up all their college-eligibility for the next football season. We pulled our dataset for the [NHL](https://www.kaggle.com/datasets/mattop/nhl-draft-hockey-player-data-1963-2022), [NBA](https://www.kaggle.com/datasets/benwieland/nba-draft-data), and the [NFL](https://www.kaggle.com/datasets/jacklichtenstein/espn-nfl-draft-prospect-data?select=nfl_draft_prospects.csv) from Kaggle. 
 
 # NHL 
 In the NHL there are seven rounds of draft picks for all 32 teams. Many of these players don’t pan out because the process of getting to the NHL is different than most other sports. Most players are drafted after their senior year of high school. Unless you are the number or some years the top few picks then you will not be going to the NHL right away. You will have to play junior hockey in order to develop and prepare your body for the NHL game. There are two different paths most people take to develop, Major Junior Hockey and College Hockey. There are other paths but these are the two most common. So most teams draft players in the hopes that they will develop into an NHL player instead of other sports when they are “pro-ready” at the time of the draft. Because of this process many players do not pan out into what they were drafted to be. So in my analysis of draft picks I will start off by looking at those players who did pan out.
@@ -111,6 +113,10 @@ nhlmosteffectivetotal1 <- nhlmosteffective %>%
   arrange(desc(valueofpick))
 ```
 
+## Skaters
+
+INSERT PHOTO
+
 Once I created the variable I aimed to explore what countries produce the best valued picks. To gauge this I averaged the value of each pick for each country represented in the data set and the results are shown in the figure below:
 ```{r echo=FALSE, message=FALSE, fig.height=3}
 #This data is only representative of skaters
@@ -140,7 +146,27 @@ ggplot(playerworldranking, aes(geometry = geom, fill = avgpickvalue)) +
   labs(fill = "Value Of Pick Ranking"
        , title = "Best Valued Skater Picks Based on Home Country")+
   scale_fill_viridis(option = "magma", direction = -1)
+
+#ggplotly()
 ```
+
+The first map shows us the skaters and although it may be difficult to see Belarus leads the NHL in producing players with the best valued picks. This was surprising to me because as an avid hockey fan I don’t necessarily look at Belarus as a hotspot for hockey players and have not heard of many that have originated there. But upon a further look in the data this is only the case because there are only two successful NHL players that have originated from Belarus and one was extremely successful so this could be a reason the data shows Belarus at the top.
+
+Another observation I derived from the first map was in regards to the powerhouse countries. I consider the powerhouse countries to be:
+
+- United States
+- Canada
+- Russia
+- Sweden 
+- Finland
+- Czech Republic
+
+Out of these countries it appears that the Czech Republic and Russia are at the top of the rankings while the rest of the countries have a similar average value. This is interesting to me because when it comes to international play the United States and Canada are always pretty dominant so it would be expected that they have the best valued picks. I believe that this is not the case because when it comes to scouting the U.S. born and the Canadian born players there is a vast array of work against the best talents that scouts can see while with the international players there are fewer games and sometimes not against as good of talent seen in North America. There is another factor that could play a role in the result. When players get drafted from overseas there is always the risk that they will not come to the United States to play hockey and there are many factors for this. Some have already signed pro contracts in their respective homes and are legally required to stay overseas for a few years. Others have fallen in the draft because of threats from their country to come over and play. So because they fall in the draft they might have the same production and talent as those at the top but are ranked higher in the metric because they were drafted lower.
+
+
+## Goaltenders
+
+INSERT PHOTO
 
 In terms of goaltenders, I used a slightly different calculation for determining the value of each goalie pick. With goaltenders you cannot use points per game and you cannot compare win shares to players because goalies play less games and the point share statistic is calculated differently for goaltenders. 
 
@@ -178,7 +204,11 @@ ggplot(goalieworldranking, aes(geometry = geom, fill = avgpickvalue)) +
   scale_fill_viridis(option = "magma", direction = -1)
 ```
 
+In the second graph that described goalies, the number for value of pick is much higher because points per game is not included and goalies are usually taken later in the draft. The results showed that Switzerland led the pack. 
 
+In terms of powerhouse teams no real country stood out from the pack. The only result that did stand out to me was Russia being at the bottom of the leaderboard. This was surprising to me because in the NHL currently a lot of the top goalies are from Russia, but as made apparent from the map this was not always the case and in recent years there has been a shift in the development of Russian goaltending for them to produce better goaltenders.
+
+## Team
 The final observation I wanted to look at was which teams make the best valued picks across the NHL. I did not filter out just to successful players because when it comes to teams picking players I wanted to look at the overall body of work of the team rather than just the successes. For the metric used to evaluate the best teams I just used the win shares variable because I thought this would give me the best look at both goalies and skaters combined when it comes to just looking at teams.
 
 The results of my findings are shown in the table below:
@@ -200,7 +230,7 @@ nhleffectiveness <- nhlpost2000to2017years1 %>%
 #group by the team and point shares
 nhlteamranking <- nhleffectiveness %>%
   group_by(team) %>%
-  summarise(avgpickvalue = mean(winshares, na.rm = TRUE))%>%
+  summarise(avgpickvalue = mean(winshares, na.rm = TRUE) * 100)%>%
   arrange(desc(avgpickvalue))
 
 nhlteamranking%>%
@@ -214,22 +244,9 @@ nhlteamranking%>%
 
 These three graph visualizations gave me some interesting data about the NHL and the value of the picks in the draft.
 
-The first map shows us the skaters and although it may be difficult to see Belarus leads the NHL in producing players with the best valued picks. This was surprising to me because as an avid hockey fan I don’t necessarily look at Belarus as a hotspot for hockey players and have not heard of many that have originated there. But upon a further look in the data this is only the case because there are only two successful NHL players that have originated from Belarus and one was extremely successful so this could be a reason the data shows Belarus at the top.
 
-Another observation I derived from the first map was in regards to the powerhouse countries. I consider the powerhouse countries to be:
 
-- United States
-- Canada
-- Russia
-- Sweden 
-- Finland
-- Czech Republic
 
-Out of these countries it appears that the Czech Republic and Russia are at the top of the rankings while the rest of the countries have a similar average value. This is interesting to me because when it comes to international play the United States and Canada are always pretty dominant so it would be expected that they have the best valued picks. I believe that this is not the case because when it comes to scouting the U.S. born and the Canadian born players there is a vast array of work against the best talents that scouts can see while with the international players there are fewer games and sometimes not against as good of talent seen in North America. There is another factor that could play a role in the result. When players get drafted from overseas there is always the risk that they will not come to the United States to play hockey and there are many factors for this. Some have already signed pro contracts in their respective homes and are legally required to stay overseas for a few years. Others have fallen in the draft because of threats from their country to come over and play. So because they fal in the draft they might have the same production and talent as those at the top but are ranked higher in the metric because they were drafted lower.
-
-In the second graph that described goalies, the number for value of pick is much higher because points per game is not included and goalies are usually taken later in the draft. The results showed that Switzerland led the pack. 
-
-In terms of powerhouse teams no real country stood out from the pack. The only result that did stand out to me was Russia being at the bottom of the leaderboard. This was surprising to me because in the NHL currently a lot of the top goalies are from Russia, but as made apparent from the map this was not always the case and in recent years there has been a shift in the development of Russian goaltending for them to produce better goaltenders.
 
 
 
