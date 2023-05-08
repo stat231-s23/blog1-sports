@@ -148,7 +148,7 @@ ggplot(playerworldranking, aes(geometry = geom, fill = avgpickvalue)) +
   scale_fill_viridis(option = "magma", direction = -1) +
   theme(legend.position = "top")
 
-#ggplotly()
+
 ```
 
 The first map shows us the skaters and although it may be difficult to see Belarus leads the NHL in producing players with the best valued picks. This was surprising to me because as an avid hockey fan I don’t necessarily look at Belarus as a hotspot for hockey players and have not heard of many that have originated there. But upon a further look in the data this is only the case because there are only two successful NHL players that have originated from Belarus and one was extremely successful so this could be a reason the data shows Belarus at the top.
@@ -213,7 +213,7 @@ In terms of powerhouse teams no real country stood out from the pack. The only r
 The final observation I wanted to look at was which teams make the best valued picks across the NHL. I did not filter out just to successful players because when it comes to teams picking players I wanted to look at the overall body of work of the team rather than just the successes. For the metric used to evaluate the best teams I just used the win shares variable because I thought this would give me the best look at both goalies and skaters combined when it comes to just looking at teams.
 
 The results of my findings are shown in the table below:
-```{r echo=FALSE}
+```{r echo=FALSE, message= FALSE}
 #add points per game to the skaters
 nhlppg <- nhl %>%
   mutate(ppg = points/games_played)%>%
