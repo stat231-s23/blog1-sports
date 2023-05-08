@@ -1,7 +1,7 @@
 ---
-title: "Your Project Title Here"
+title: "An Analysis of Draft Picks In the NHL, NFL, NBA "
 author: "Joshua Burke, Olivia Stewart, Sriyash Singhania"
-date: "Add a date"
+date: "\\today"
 output:
   rmdformats::readthedown:
     highlight: "kate"
@@ -17,297 +17,396 @@ options(knitr.kable.NA = '')
 
 # Load packages
 library(tidyverse)
-
+library(maps)
+library(sf)
+library(kableExtra)
+library(DT)
+library(viridis)
+library(ggplot2)
+library(car)
 ```
 
 # Intro
 
-This is an R Markdown blog template. This document will be knit to HTML to produce a webpage that will be hosted publicly via GitHub.
+In this project, our group set out to take a more in-depth analysis of draft picks over the last 20 years of three of the four major sports leagues in North America. We aimed to see what what places produced the best picks and then what teams in the leagues are the ones making the best valued picks. We pulled our dataset for the [NHL](https://www.kaggle.com/datasets/mattop/nhl-draft-hockey-player-data-1963-2022), [NBA](https://www.kaggle.com/datasets/benwieland/nba-draft-data), and the [NFL](https://www.kaggle.com/datasets/jacklichtenstein/espn-nfl-draft-prospect-data?select=nfl_draft_prospects.csv) from Kaggle. 
 
-## Website publication work flow
+# NHL 
+In the NHL there are seven rounds of draft picks for all 32 teams. Many of these players don’t pan out because the process of getting to the NHL is different than most other sports. Most players are drafted after their senior year of high school. Unless you are the number or some years the top few picks then you will not be going to the NHL right away. You will have to play junior hockey in order to develop and prepare your body for the NHL game. There are two different paths most people take to develop, Major Junior Hockey and College Hockey. There are other paths but these are the two most common. So most teams draft players in the hopes that they will develop into an NHL player instead of other sports when they are “pro-ready” at the time of the draft. Because of this process many players do not pan out into what they were drafted to be. So in my analysis of draft picks I will start off by looking at those players who did pan out.
 
-1. Edit Rmd
+I took the draft data from those after the year 2000 and before the year 2018. I removed the last 5 years mainly because many players from those draft classes have not had enough experience or have not had enough time to develop into NHL players yet so their stats will not be a representation of what they can do in the NHL. I also looked at players that had at least 80 games played in the NHL. My representation of a successful NHL player is one that has played around a season in the NHL which is 82 games so I thought that 80 would be an appropriate number. 
 
-2. Knit to HTML to view progress. You may need to click "Open in Browser" for some content to show (sometimes content won't show until you actually push your changes to GitHub and view the published website).
+With the values in the dataset I tried to create a variable that would represent the overall value of each pick. I started with the point share statistic. Point share is calculated over a few statistics that include:
 
-3. Commit and push changes when you are ready. The website may take a couple minutes to update automatically after the push, but you may need to clear your browser's cache or view the page in a private/incognito window to see the changes more quickly. 
+- Marginal Goals For = (team goals) - (7 / 12) × (team games) × (league goals per game)
+- Marginal Goals Against = (1 + (7 / 12)) × (team games) × (league goals per game) - (team goals against)
+- Skater Point Shares = (marginal goals) / (marginal goals per point)
+
+“Why 7/12? At even strength a team has six players on the ice, five skaters and one goalie. Imagine each of these players having two chips to contribute to one of two buckets: offense and defense. Collectively the skaters will contribute five chips to the offensive bucket and five chips to the defensive bucket. However, the goalie will contribute both of his chips to the defensive bucket, giving the defensive bucket seven of the twelve chips.”
+
+This dataset already calculated point shares. From there I created a variable that I labeled win shares. I calculated win shares by dividing points shares by the amount of games played. I did this to see the point shares per game because it appeared from the data that those who had been in the league longer had a higher point share than those who did not have as many games played, so this evened it out for every player regardless of experience. Finally, I created a variable in which I believe calculates the value of each pick in the NHL. This variable was derived by multiplying win shares by points a player has per game and the final measurement I added was the overall pick of a player. 
+
+The reason I added win shares and points per game was because wins shares takes in defensive stats as well and only looks for goals for and against while it does not take in the total amount of points the players actually score. I added in the overall pick because this is giving us which picks have the best overall value. This means that if a player selected with the 100th pick is putting up the same production that a player that was taken with the 10th pick then the player who was picked 100th has the better value.
+
+```{r include=FALSE}
+#initial importing of the file
+#import the nhl draft dataset
+nhl <- read_csv("dataforNHL/nhldraft.csv")
+
+#import the map
+world_map <- maps::map("world", plot = FALSE, fill = TRUE) %>%
+  st_as_sf()
+
+#mutate to change nationalities to coutries on maps
+#this may seem a bit tedious but this was the most efficient way I found because some of the abbreviation didn't match up to the package
+nhlcountrynames <- nhl %>%
+  mutate_if(is.numeric, ~replace_na(.,0))%>%
+  mutate(nationality = ifelse(nationality == "CA", paste("Canada"), nationality ))%>%
+  mutate(nationality = ifelse(nationality == "US", paste("USA"), nationality ))%>%
+  mutate(nationality = ifelse(nationality == "FI", paste("Finland"), nationality ))%>%
+  mutate(nationality = ifelse(nationality == "SE", paste("Sweden"), nationality ))%>%
+  mutate(nationality = ifelse(nationality == "RU", paste("Russia"), nationality ))%>%
+  mutate(nationality = ifelse(nationality == "CZ", paste("Czech Republic"), nationality ))%>%
+  mutate(nationality = ifelse(nationality == "FR", paste("France"), nationality ))%>%
+  mutate(nationality = ifelse(nationality == "CH", paste("Switzerland"), nationality ))%>%
+  mutate(nationality = ifelse(nationality == "DE", paste("Germany"), nationality ))%>%
+  mutate(nationality = ifelse(nationality == "SK", paste("Slovakia"), nationality ))%>%
+  mutate(nationality = ifelse(nationality == "AT", paste("Austrian"), nationality ))%>%
+  mutate(nationality = ifelse(nationality == "AU", paste("Australia"), nationality ))%>%
+  mutate(nationality = ifelse(nationality == "DK", paste("Denmark"), nationality ))%>%
+  mutate(nationality = ifelse(nationality == "LV", paste("Latvia"), nationality ))%>%
+  mutate(nationality = ifelse(nationality == "UA", paste("Ukraine"), nationality ))%>%
+  mutate(nationality = ifelse(nationality == "ZA", paste("South Africa"), nationality ))%>%
+  mutate(nationality = ifelse(nationality == "EE", paste("Estonia"), nationality ))%>%
+  mutate(nationality = ifelse(nationality == "SI", paste("Slovenia"), nationality ))%>%
+  mutate(nationality = ifelse(nationality == "NL", paste("Netherlands"), nationality ))%>%
+  mutate(nationality = ifelse(nationality == "BY", paste("Belarus"), nationality ))%>%
+  mutate(nationality = ifelse(nationality == "GB", paste("UK"), nationality ))%>%
+  mutate(nationality = ifelse(nationality == "IT", paste("Italy"), nationality ))%>%
+  mutate(nationality = ifelse(nationality == "KZ", paste("Kazakhstan"), nationality ))%>%
+  mutate(nationality = ifelse(nationality == "NO", paste("Norway"), nationality ))%>%
+  mutate(nationality = ifelse(nationality == "PL", paste("Poland"), nationality ))
+
+#add points per game to the skaters
+nhlcountrynames1 <- nhlcountrynames %>%
+  mutate(ppg = points/games_played)
+
+#take draft data so players are a minimum 5 years removed from being drafted and in the 21century
+nhlpost2000to2017years <- nhlcountrynames1 %>%
+  filter(year < 2018)%>%
+  filter(year > 1999)
+
+#wrangle to filter people who have played more than 80 games
+nhlrelevant <- nhlpost2000to2017years %>%
+  filter(games_played > 79)
+
+#mutate to create a variable that divides games played by point shares
+nhlmosteffective <- nhlrelevant %>%
+  mutate(winshares = point_shares/games_played)%>%
+  arrange(desc(winshares))
 
 
-# Content
-
-You can include text, `code`, and output as usual. Remember to take full advantage of Markdown and follow our [Style Guide](https://acstat231-f22.github.io/home/style-guide.html#Text_narration).
-
-```{r ggplot-example, fig.align="left", out.width="100%"}
-ggplot(data = cars, aes(x = speed, y = dist)) + 
-  geom_point() + 
-  labs(x = "Speed of car (mph)",
-       y = "Distance taken to stop (ft)",
-       title = "Stopping distance increases with faster speeds",
-       subtitle = "Based on 1920s study") +
-  theme_classic()
+#make variable that multiplies pick in draft to winshares
+nhlmosteffectivetotal1 <- nhlmosteffective %>%
+  mutate(valueofpick = winshares * overall_pick)%>%
+  arrange(desc(valueofpick))
 ```
 
-Examples and additional guidance are provided below. 
+Once I created the variable I aimed to explore what countries produce the best valued picks. To gauge this I averaged the value of each pick for each country represented in the data set and the results are shown in the figure below:
+```{r echo=FALSE, message=FALSE, fig.height=3}
+#This data is only representative of skaters
+#make variable that multiplies pick in draft to winshares
+nhlmosteffectiveskater1 <- nhlmosteffectivetotal1 %>%
+  mutate(valueofskater = winshares * overall_pick * ppg)%>%
+  arrange(desc(valueofskater))
 
-Take note of the the default code chunk options in the `setup` code chunk. For example, unlike the rest of the Rmd files we worked in this semester, the default code chunk option is `echo = FALSE`, so you will need to set `echo  = TRUE` for any code chunks you would like to display in the blog. You should be thoughtful and intentional about the code you choose to display. 
+# combine the map to the countries for sskaters
+worldtotalmap <- nhlmosteffectiveskater1 %>%
+  left_join(world_map, by = c("nationality" = "ID"), multiple = "all")%>%
+  mutate_if(is.numeric, ~replace_na(.,0))
 
 
-## Links 
+#summarize into countries
+playerworldranking <- worldtotalmap %>%
+  filter(position != "G")%>%
+  group_by(nationality, geom) %>%
+  summarise(avgpickvalue = mean(valueofskater, na.rm = TRUE))%>%
+  arrange(desc(avgpickvalue))
+  
 
-You can include [links](https://www.datadreaming.org/post/r-markdown-theme-gallery/) using Markdown syntax as shown. 
+#make graph to represent graph of best valued picks for skaters
+ggplot(playerworldranking, aes(geometry = geom, fill = avgpickvalue)) +
+  geom_sf() +
+  theme_void() +
+  labs(fill = "Value Of Pick Ranking"
+       , title = "Best Valued Skater Picks Based on Home Country")+
+  scale_fill_viridis(option = "magma", direction = -1)
+```
 
-You should include links to relevant sites as you write. You should additionally include a list of references as the end of your blog with full citations (and relevant links).
+In terms of goaltenders, I used a slightly different calculation for determining the value of each goalie pick. With goaltenders you cannot use points per game and you cannot compare win shares to players because goalies play less games and the point share statistic is calculated differently for goaltenders. 
+
+Point shares are calculated slightly differently for goaltenders. It is based on the formula:
+
+Goalie Point Shares = (2 / 7) × ((marginal goals against) / (marginal goals per point))
+
+“Why 2/7? Of the seven chips contributed to the defensive bucket, two came from the goalie.”
+
+For calculating the value of each pick. I still used the win shares variable. but this time I just multiplied the win shares variable with the overall pick variable and that is how I calculated the value for each pick. I then completed the same process of summarizing the results by country and inputting it into a spatial map. The results are shown below:
+```{r echo=FALSE, message=FALSE, fig.height= 3}
+# make a plot for where the best valued goalies stem from
+goaliedata <- nhlmosteffectivetotal1 %>%
+  filter(position == "G")%>%
+  select(year, overall_pick, team, player, nationality, games_played, 
+         goalie_wins, goalie_losses, point_shares, save_percentage, 
+         goals_against_average, valueofpick)%>%
+  mutate(winpct = goalie_wins/games_played)
+
+goalieworldmap <- goaliedata %>%
+  left_join(world_map, by = c("nationality" = "ID"), multiple = "all")%>%
+  mutate_if(is.numeric, ~replace_na(.,0))
 
 
-## Visualizations 
+goalieworldranking <- goalieworldmap %>%
+  group_by(nationality, geom) %>%
+  summarise(avgpickvalue = mean(valueofpick, na.rm = TRUE))%>%
+  arrange(desc(avgpickvalue))
 
-Visualizations, particularly interactive ones, will be well-received. That said, do not overuse visualizations. You may be better off with one complicated but well-crafted visualization as opposed to many quick-and-dirty plots. Any plots should be well-thought-out, properly labeled, informative, and visually appealing.
-
-If you want to include dynamic visualizations or tables, you should explore your options from packages that are built from [**htmlwidgets**](https://www.htmlwidgets.org/showcase_leaflet.html). These **htmlwidgets**-based packages offer ways to build lighterweight, dynamic visualizations or tables that don't require an R server to run! A more complete list of packages is available on the linked website, but a short list includes:
-
-* [**plotly**](https://plot.ly/r/): Interactive graphics with D3
-* [**leaflet**](https://rstudio.github.io/leaflet/): Interactive maps with OpenStreetMap
-* [**dygraphs**](http://rstudio.github.io/dygraphs): Interactive time series visualization
-* [**visNetwork**](http://dataknowledge.github.io/visNetwork): Network graph visualization vis.js
-* [**sparkline**](https://github.com/htmlwidgets/sparkline): Small inline charts
-* [**threejs**](https://github.com/bwlewis/rthreejs): Interactive 3D graphics
-    
-You may embed a published Shiny app in your blog if useful, but be aware that there is a limited window size for embedded objects, which tends to makes the user experience of the app worse relative to a dedicated Shiny app page. Additionally, Shiny apps will go idle after a few minutes and have to be reloaded by the user, which may also affect the user experience. 
-
-Any Shiny apps embedded in your blog should be accompanied by the link to the published Shiny app (I did this using a figure caption in the code chunk below, but you don't have to incorporate the link in this way).
-
-```{r ds-salaries-app, out.width = "100%", out.extra = 'data-external="1" frameborder="no"', fig.cap = "[Data Science Salaries Shiny App](https://bebailey.shinyapps.io/data-science-salaries)"}
-knitr::include_app("https://bebailey.shinyapps.io/data-science-salaries",
-                   height = "500px")
+ggplot(goalieworldranking, aes(geometry = geom, fill = avgpickvalue)) +
+  geom_sf() +
+  theme_void() +
+  labs(fill = "Value Of Pick Ranking"
+       , title = "Best Valued Goaltender Picks Based on Home Country")+
+  scale_fill_viridis(option = "magma", direction = -1)
 ```
 
 
-## Tables
+The final observation I wanted to look at was which teams make the best valued picks across the NHL. I did not filter out just to successful players because when it comes to teams picking players I wanted to look at the overall body of work of the team rather than just the successes. For the metric used to evaluate the best teams I just used the win shares variable because I thought this would give me the best look at both goalies and skaters combined when it comes to just looking at teams.
 
-### **DT** package
+The results of my findings are shown in the table below:
+```{r echo=FALSE}
+#add points per game to the skaters
+nhlppg <- nhl %>%
+  mutate(ppg = points/games_played)%>%
+  mutate_if(is.numeric, ~replace_na(.,0))
 
-The [**DT** package](https://rstudio.github.io/DT/) is great for making dynamic tables that can be displayed, searched, and filtered by the user without needing an R server or Shiny app!
+#take draft data so players are a minimum 5 years removed from being drafted and in the 21century
+nhlpost2000to2017years1 <- nhlppg %>%
+  filter(year < 2018)%>%
+  filter(year > 1999)
 
-Note: you should load any packages you use in the `setup` code chunk as usual. The `library()` functions are shown below just for demonstration.
+nhleffectiveness <- nhlpost2000to2017years1 %>%
+  mutate(winshares = point_shares/games_played)%>%
+  arrange(desc(winshares))
 
-```{r dt-example, message=FALSE, echo=TRUE}
-library(DT)
-mtcars %>% 
-  select(mpg, cyl, hp) %>% 
-  datatable(colnames = c("MPG", "Number of cylinders", "Horsepower"),
+#group by the team and point shares
+nhlteamranking <- nhleffectiveness %>%
+  group_by(team) %>%
+  summarise(avgpickvalue = mean(winshares, na.rm = TRUE))%>%
+  arrange(desc(avgpickvalue))
+
+nhlteamranking%>%
+  select(team, avgpickvalue) %>% 
+  datatable(colnames = c("Team", "Average Pick Value"),
             filter = 'top',
             options = list(pageLength = 10, autoWidth = TRUE))
 ```
 
-### **kableExtra** package
+## Analysis of Results
 
-You can also use [**kableExtra**](https://cran.r-project.org/web/packages/kableExtra/vignettes/awesome_table_in_html.html) for customizing HTML tables.
+These three graph visualizations gave me some interesting data about the NHL and the value of the picks in the draft.
 
-```{r kable-example, echo=TRUE, message=FALSE}
-library(kableExtra)
-summary(cars) %>%
-  kbl(col.names = c("Speed", "Distance"),
-      row.names = FALSE) %>%
-  kable_styling(bootstrap_options = "striped",
-                full_width = FALSE) %>%
-  row_spec(0, bold = TRUE) %>%
-  column_spec(1:2, width = "1.5in") 
+The first map shows us the skaters and although it may be difficult to see Belarus leads the NHL in producing players with the best valued picks. This was surprising to me because as an avid hockey fan I don’t necessarily look at Belarus as a hotspot for hockey players and have not heard of many that have originated there. But upon a further look in the data this is only the case because there are only two successful NHL players that have originated from Belarus and one was extremely successful so this could be a reason the data shows Belarus at the top.
+
+Another observation I derived from the first map was in regards to the powerhouse countries. I consider the powerhouse countries to be:
+
+- United States
+- Canada
+- Russia
+- Sweden 
+- Finland
+- Czech Republic
+
+Out of these countries it appears that the Czech Republic and Russia are at the top of the rankings while the rest of the countries have a similar average value. This is interesting to me because when it comes to international play the United States and Canada are always pretty dominant so it would be expected that they have the best valued picks. I believe that this is not the case because when it comes to scouting the U.S. born and the Canadian born players there is a vast array of work against the best talents that scouts can see while with the international players there are fewer games and sometimes not against as good of talent seen in North America. There is another factor that could play a role in the result. When players get drafted from overseas there is always the risk that they will not come to the United States to play hockey and there are many factors for this. Some have already signed pro contracts in their respective homes and are legally required to stay overseas for a few years. Others have fallen in the draft because of threats from their country to come over and play. So because they fal in the draft they might have the same production and talent as those at the top but are ranked higher in the metric because they were drafted lower.
+
+In the second graph that described goalies, the number for value of pick is much higher because points per game is not included and goalies are usually taken later in the draft. The results showed that Switzerland led the pack. 
+
+In terms of powerhouse teams no real country stood out from the pack. The only result that did stand out to me was Russia being at the bottom of the leaderboard. This was surprising to me because in the NHL currently a lot of the top goalies are from Russia, but as made apparent from the map this was not always the case and in recent years there has been a shift in the development of Russian goaltending for them to produce better goaltenders.
+
+
+
+# NFL 
+
+The NFL draft process occurs when NFL teams pick players, often attending and playing in colleges and universities across the country. The pattern that most typically occurs is the best college football players in the country are often picked in the first couple of rounds. For example, the first player picked in the first round of the draft is likely very talented and highly sought-after. A player’s performance at their college or university is an important consideration for how likely, or quickly they will be picked by an NFL team. Something to consider when looking at players drafted in the NFL, and their corresponding college, is whether there are certain college football teams that produce some of the first picks in the NFL draft. Throughout this analysis we can determine which U.S. states produce some of the top overall NFL draft picks over fifteen years. This information can help us identify states with the top college football players, as well as determine if there are any correlations between the state a player went to school in and the NFL team they were drafted to. 
+
+The data below represents the NFL draft process over a fifteen year period (2006 to 2021). Including in this data included players' names, school they attended, NFL team they were drafted to, the overall pick of each player (ranged 1-32), and the year players were drafted. The map below specifically looks at players' colleges and universities in states across the country and that players' corresponding overall pick number. 
+
+
+```{r include=FALSE}
+#import the NFL draft dataset
+nfl <- read_csv("dataforNFL/nfl_draft_picks.csv")
+
+#filter the players that were picked only in the 1st round 
+#and only look at years 2017-2021
+nflrounds <- nfl%>% 
+  filter(Round == 1)%>%
+  filter(Year > 2005)
+
+#add states to the dataset 
+nfl_with_states <- nflrounds %>%
+mutate(
+  state_cd = case_when(
+    School == "Alabama" ~ "AL",
+    School == "Alabama State" ~ "AL",
+    School == "Arizona State" ~ "AZ",
+    School == "Arizona" ~ "AZ",
+    School == "Arkansas" ~"AR", 
+    School == "Auburn" ~ "AL", 
+    School == "Baylor" ~ "TX", 
+    School == "Boise State" ~ "ID", 
+    School == "Boston College" ~ "MA", 
+    School == "Brigham Young" ~ "UT", 
+    School == "Buffalo" ~ "NY",
+    School == "California" ~ "CA",
+    School == "Central Florida" ~ "FL", 
+    School == "Central Michigan" ~ "MI",
+    School == "Clemson" ~ "SC", 
+    School == "Colorado" ~ "CO",
+    School == "Connecticut" ~ "CT", 
+    School == "Delaware" ~ "DE", 
+    School == "Duke" ~ "NC", 
+    School == "East Carolina" ~ "NC",
+    School == "Florida" ~ "FL", 
+    School == "Florida State" ~ "FL", 
+    School == "Fresno State" ~ "CA", 
+    School == "Georgia" ~ "GA", 
+    School == "Houston" ~ "TX", 
+    School == "Idaho" ~ "ID", 
+    School == "Illinois" ~ "IL", 
+    School == "Iowa" ~ "IA", 
+    School == "Kansas" ~ "KS", 
+    School == "Kansas State" ~ "KS", 
+    School == "Kentucky" ~ "KY", 
+    School == "Louisiana State" ~ "LA",
+    School == "Louisiana Tech" ~ "LA",
+    School == "Louisville" ~ "KY", 
+    School == "Maryland" ~ "MD", 
+    School == "Memphis" ~ "TN", 
+    School == "Miami (FL)" ~ "FL", 
+    School == "Michigan" ~ "MI", 
+    School == "Michigan State" ~ "MI", 
+    School == "Minnesota" ~ "MN", 
+    School == "Mississippi" ~ "MS", 
+    School == "Mississippi State" ~ "MS", 
+    School == "Missouri" ~ "MO", 
+    School == "Nebraska" ~ "NE", 
+    School == "North Carolina" ~ "NC", 
+    School == "North Carolina State" ~ "NC",
+    School == "North Dakota State" ~ "ND",
+    School == "Northern Illinois" ~ "IL",
+    School == "Northwestern" ~ "IL", 
+    School == "Notre Dame" ~ "IN", 
+    School == "Ohio State" ~ "OH", 
+    School == "Oklahoma" ~ "OK", 
+    School == "Oklahoma State" ~ "OK",
+    School == "Oregon" ~ "OR", 
+    School == "Oregon State" ~ "OR", 
+    School == "Penn State" ~ "PA", 
+    School == "Pittsburgh" ~ "PA",
+    School == "Purdue" ~ "IN", 
+    School == "Rutgers" ~ "NJ", 
+    School == "San Diego State" ~ "CA", 
+    School == "South Carolina" ~ "SC", 
+    School == "Stanford" ~ "CA", 
+    School == "Syracuse" ~ "NY", 
+    School == "Temple" ~ "PA", 
+    School == "Tennessee" ~ "TN", 
+    School == "Tennessee State" ~ "TN", 
+    School == "Texas" ~ "TX", 
+    School == "Texas A&M" ~ "TX", 
+    School == "Texas Christian" ~ "TX", 
+    School == "Texas Tech" ~ "TX",
+    School == "Texas-San Antonio" ~ "TX", 
+    School == "Troy" ~ "AL", 
+    School == "Tulsa" ~ "OK", 
+    School == "UCLA" ~ "CA", 
+    School == "USC" ~ "CA", 
+    School == "Utah" ~ "UT", 
+    School == "Utah State" ~ "UT", 
+    School == "Vanderbilt" ~ "TN", 
+    School == "Virginia" ~ "VA", 
+    School == "Virginia Tech" ~ "VA", 
+    School == "Wake Forest" ~ "NC", 
+    School == "Washington" ~ "WA", 
+    School == "Washington State" ~ "WA", 
+    School == "Western Michigan" ~ "MI", 
+    School == "West Virginia" ~ "WV", 
+    School == "Wisconsin" ~ "WI", 
+    School == "Wyoming" ~ "WY") 
+  )
+
+#import the map
+states_map <- maps::map("state", regions = ".", plot = FALSE, fill = TRUE) %>%
+  st_as_sf()
+state_info <- data.frame(state_full = tolower(state.name)
+                         , state_cd = state.abb)
+
+#add full name of states to NFL dataset and merge with mapping dataset
+nfl_final <- nfl_with_states %>%
+  left_join(state_info, by = "state_cd") %>%
+  right_join(states_map, by = c("state_full"="ID"))
 ```
 
 
-## Images
 
-Images and gifs can be displayed using code chunks:
-
-```{r, fig.cap='"Safe Space" by artist Kenesha Sneed', out.width="80%", fig.align="center"}
-knitr::include_graphics("img/Kenesha-Sneed_safe-space.jpeg")
+```{r echo=FALSE, message=FALSE}
+#create plot on US country map
+ggplot(nfl_final, aes(geometry=geom, fill = Overall)) +
+  geom_sf(color = "lightgrey") +
+  theme_void() +
+  labs(fill = "Overall Draft Pick (1-32)"
+       , frame.colour = "black"
+       , barwidth = 15
+       , barheight = 1.5
+       , title = "  U.S. College Football Athletes Drafted in the First Round (from 2006 to 2021)") +
+         theme(legend.position="bottom") +
+  scale_fill_distiller(palette = "Spectral", direction = 1) 
 ```
 
 
-```{r, fig.cap="This is a figure caption", out.width="50%", fig.align="center"}
-knitr::include_graphics("https://media.giphy.com/media/H7ZrrA9V2pd3Tehdds/giphy.gif")
+The table below includes results from the NFL Draft process from 2006 to 2021:
+```{r echo=FALSE, message=FALSE}
+#user interactive table 
+library(DT)
+nfl_final %>% 
+  select(Name, Position, Overall, School, Year,) %>% 
+  datatable(colnames = c("Name", "Position", "Overall Draft Pick", "School", "Year"),
+            rownames = head(nfl_final),
+            filter = 'top',
+            options = list(pageLength = 10, autoWidth = TRUE))
 ```
 
-You may also use Markdown syntax for displaying images as shown below, but code chunks offer easier customization of the image size and alignment.
+## Analysis of Results 
 
-![This is another figure caption](https://media.giphy.com/media/8i5IvxP9ZLgmjXN1BF/giphy.gif)
+Before analyzing this topic, we had hypothesized that states such as Alabama, Texas, and Louisiana would have some of the highest overall draft picks. I thought this based on the stigma around large football schools in these states, and how seemingly successful they have been over the past few years. However, after using spatial visualizations to further analyze this data we found that states such as New York, Oregon, Wyoming, and Utah have had college football players drafted in the first round and had overall picks of ten or higher, over the period from 2006 to 2021. On the map provided above, these states are colored in red and orange, indicating a player picked relatively high in the first round. Something to consider when looking at this data is that the map only shows data for the first round of the NFL draft, when in reality, there are seven rounds total. If we were to alter the data and look at different rounds, we might see different results. Populations that could find these results interesting are high school recruits whose goal is to make it to the NFL. They could look at the map, or use the search function in the table to see which college or university has consistently sent players to the NFL. To personalize these results further, high school football recruits could search their position and determine what school, and NFL team, previous players have gone to.
 
-Either way, the file path can be a local path within your project directory or a URL for an image hosted online. This syntax works for PNG, PDF, JPG, and even GIF formats.
+Another aspect of the map to consider are the states colored in gray. The grsy-colored states represent states for which there are no colleges that sent players to the first round of the NFL draft from the years 2006 to 2021. We can see there is a concentration of these states in the far northeast portion on the map, considerably the states Maine, Vermont, New Hampshire, and Rhode Island. It is widely assumed and stereotyped that some of the best college football schools are located in the southern and mid-Atlantic portion of the U.S. From these results we can confirm this assumption and determine that some of the most northern states in the country are not as successful, or do not have as talented players, attending school in these states. 
 
 
-## Videos
+# NBA
 
-You can use code chunks or Markdown syntax include links to any valid YouTube or Vimeo URLs (see [here](https://bookdown.org/yihui/rmarkdown/learnr-videos.html) for details) or point to a location within your project directory. 
 
-Code chunk:
 
-```{r, out.width="80%", fig.align="center"}
-knitr::include_url("https://www.youtube.com/watch?v=up8ODGFWgFg")
-```
-
-Markdown syntax:
-
-![](https://www.youtube.com/watch?v=up8ODGFWgFg){width="90%"}
-
-
-You may need to push your updates to GitHub to see if the videos work.
-
-
-
-
-## Equations
-
-You might include equations if part of the purpose of your blog is to explain a statistical method. There are two ways to include equations:
-
-* Inline: $b \sim N(0, \sigma^2_b)$
-* Display-style (displayed on its own line): 
-$$\frac{\sigma^2_b}{\sigma^2_b + \sigma^2_e}$$
-
-For typesetting equations appropriately, check out the [AMS-LaTeX quick reference](https://github.com/manuelemacchia/math-latex/blob/master/amsmath.pdf) or take a look at the *Symbols in math mode* section of this  [cheat sheet](https://users.dickinson.edu/~richesod/latex/latexcheatsheet.pdf)  (or do some extra Googling---there are *many* resources).
-
-
-
-# Formatting
-
-## Tabbed subsections {.tabset}
-
-Each subsection below the "Tabbed subsections" section heading will appear in a tab. See R Markdown Cookbook [Section 7.6: Put content in tabs](https://bookdown.org/yihui/rmarkdown-cookbook/html-tabs.html) for additional customization options. 
-
-### Bulleted list
-
-You can make a bulleted list like this:
-
-* item 1
-* item 2
-* item 3
-
-
-### Numbered list
-
-
-You can make a numbered list like this
-
-1. First thing I want to say
-2. Second thing I want to say
-3. Third thing I want to say
-
-
-
-## Column formatting
-
-<!-- Begin columns environment -->
-:::::: {style="display: flex; font-size: large;"}
-
-<!-- Create a column -->
-::: {}
-### Content Column 1
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse vel ipsum eu sem facilisis porttitor. Integer eu tristique lectus. Vestibulum nisi risus, porta sit amet cursus nec, auctor ac tellus. Integer egestas viverra rhoncus. Fusce id sem non ante vestibulum posuere ac sed lorem. Proin id felis a mi pellentesque viverra in at nulla. Duis augue nulla, aliquet ac ligula a, sagittis varius lorem.
-
-
-
-:::
-
-<!-- Create another column (this one is just adding horizontal space to separate content) -->
-::: {}
-<div class="horizontalgap" style="width:60px"></div>
-:::
-
-<!-- Create another column -->
-::: {}
-
-### Content Column 2
-
-Aliquam non ante et erat luctus hendrerit eu ac justo. Fusce lacinia pulvinar neque non laoreet. Fusce vitae mauris pharetra, scelerisque purus eget, pharetra nisl. Aenean volutpat elementum tortor vitae rhoncus. Phasellus nec tellus euismod neque congue imperdiet tincidunt in mauris. Morbi eu lorem molestie, hendrerit lorem nec, semper massa. Sed vulputate hendrerit ex, eget cursus purus. Pellentesque consequat erat leo, eleifend porttitor lacus porta at. Vivamus faucibus quam ipsum, id condimentum ligula malesuada ultrices. Nullam luctus leo elit, vitae rutrum nibh venenatis eget. Nam at sodales purus. Proin nulla tellus, lacinia eget pretium sed, vehicula aliquet neque. Morbi vel eros elementum, suscipit elit eu, consequat libero. Nulla nec aliquet neque. Nunc bibendum sapien lectus, sed elementum nisi rutrum non. Ut vulputate at lacus eget maximus.
-
-```{r, out.width="80%", fig.align="right"}
-mtcars %>% 
-  ggplot(aes(x = wt, y = mpg)) +
-  geom_point()
-```
-
-:::
-::::::
-<!-- End columns environment with matching length indicator-->
-
-
-
-
-# Customizing your blog design
-
-
-As a *final* detail **only** if you have time, you can explore options for customizing the style of your blog. By default, we are using the `readthedown` theme from the [**rmdformats** package](https://github.com/juba/rmdformats) (see Line 6 of this file if you want to switch out themes).
-
-
-## Theme
-You can use the [**rmdformats** package](https://github.com/juba/rmdformats) to play around with some pre-built themes. There are, I'm sure, many many many more similar packages with built in themes, or you can look into how to include a CSS code chunk to customize aspects of a theme.  
-
-Using the **rmdformats** package, you can change the theme itself (Line 6): 
-
-* `rmdformats::readthedown`
-* `rmdformats::downcute` 
-  * For `downcute` only, you can add a new indented line below Line 6 with the code `downcute_theme: "chaos"` for the `downcute chaos` theme
-* `rmdformats::robobook` 
-* `rmdformats::material`
-
-You can explore additional YAML options by looking at the [**rmdformats** package](https://github.com/juba/rmdformats) page or running, for example, `?rmdformats::readthedown()` to see the help documentation for a particular theme from the package. 
-
-## Synax highlighting
-
-You can also change the code chunk syntax highlighting option (Line 7, `highlight`): 
-
-* `"default"`
-* `"tango"`
-* `"pygments"`
-* `"kate"`
-* `"monochrome"`
-* `"espresso"`
-* `"zenburn"`
-* `"haddock"`
-* `"textmate"` 
-* `NULL` for no syntax highlighting (not recommended)
-
-## Font size, type, and other customization
-
-Further customization requires adding a CSS style file or code chunk or incorporating other development options. Customization beyond the **rmdformats** package should be your lowest and final priority for the project. Ensure your content is fully prepared first.
-
-
-# References
-
-All data sources, any key R packages, and any other sources used in developing your blog should be cited in full in a list of references at the end of your blog. Your blog post should also link to these sources as they are discussed. You may choose any reference style as long as sources are fully cited (try to be consistent!).
-
-Typically, references in R Markdown (and LaTeX) files are [incorporated with a BibTeX database](https://bookdown.org/yihui/rmarkdown-cookbook/bibliography.html) (a .bib file). You can try this approach or manually include either a numbered or alphabetized list. 
-
-Columbia University has compiled some guidance on [how to cite data](https://guides.library.columbia.edu/datacitation). Some data sources will give you the citation information to copy and paste. Use the provided citations or citation styles in those cases.
-
-You can list R package citations with the code `citation("packageName")` in the console and then copy (and reformat as needed) the relevant text, e.g.,
-```{r}
-citation("DT")
-```
-
-The following citations are based on the American Statistical Association citation style (not all of these references are used in this document).:
-
-
-<!-- Textbook -->
-Baumer, B. S., Kaplan, D. T., and Horton, N. J. (2021), *Modern Data Science with R* (2nd ed.), Boca Raton, FL: CRC Press.
-
-<!-- Journal article -->
-Broman, K. W. and Woo, K. H. (2018), "Data Organization in Spreadsheets," *The American Statistician*, 72:1, 2-10, doi: [10.1080/00031305.2017.1375989](https://doi.org/10.1080/00031305.2017.1375989)
-
-<!-- Website -->
-Columbia University Libraries (n.d.), "Data Citation," available at <https://guides.library.columbia.edu/datacitation>.
-
-<!-- Journal article -->
-McNamara, A. and Horton N. J. (2018) "Wrangling Categorical Data in R," *The American Statistician*, 72:1, 97-104, doi: [10.1080/00031305.2017.1356375](https://doi.org/10.1080/00031305.2017.1356375).
-
-<!-- Dataset -->
-Shah, Syed A. A. (October 2022), "Starbucks Drinks" (Version 1), *Kaggle*, available at <https://www.kaggle.com/datasets/syedasimalishah/starbucks-drinks>.
-
-<!-- R package -->
-Xie Y, Cheng J, Tan X (2022). "DT: A Wrapper of the JavaScript Library 'DataTables'," R package version 0.24, available at <https://CRAN.R-project.org/package=DT>.
+## Analysis
+  
   
 
 
+# Final Thoughts Of Results
+
+
+
+
+# References
+https://www.hockey-reference.com/about/point_shares.html
  
 
 

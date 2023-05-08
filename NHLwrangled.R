@@ -91,7 +91,7 @@ ggplot(playerworldranking, aes(geometry = geom, fill = avgpickvalue)) +
   geom_sf() +
   theme_void() +
   labs(fill = "Value Of Pick Ranking"
-       , title = "Best Valued Picks")
+       , title = "Best Valued Skater Picks Based on Home Country")
 
 # make a plot for where the best valued goalies stem from
 goaliedata <- nhlmosteffectivetotal1 %>%
@@ -104,3 +104,45 @@ goaliedata <- nhlmosteffectivetotal1 %>%
 goalieworldmap <- goaliedata %>%
   left_join(world_map, by = c("nationality" = "ID"), multiple = "all")%>%
   mutate_if(is.numeric, ~replace_na(.,0))
+
+
+goalieworldranking <- goalieworldmap %>%
+  group_by(nationality, geom) %>%
+  summarise(avgpickvalue = mean(valueofpick, na.rm = TRUE))%>%
+  arrange(desc(avgpickvalue))
+
+ggplot(goalieworldranking, aes(geometry = geom, fill = avgpickvalue)) +
+  geom_sf() +
+  theme_void() +
+  labs(fill = "Value Of Pick Ranking"
+       , title = "Best Valued Goaltender Picks Based on Home Country")
+
+
+
+
+# RESET THE DATA AND LOOK AT WHAT TEAM PICK THE BEST VALUED PICKS
+
+#import the north American graph
+
+
+
+#add points per game to the skaters
+nhlppg <- nhl %>%
+  mutate(ppg = points/games_played)%>%
+  mutate_if(is.numeric, ~replace_na(.,0))
+
+#take draft data so players are a minimum 5 years removed from being drafted and in the 21century
+nhlpost2000to2017years1 <- nhlppg %>%
+  filter(year < 2018)%>%
+  filter(year > 1999)
+
+nhleffectiveness <- nhlpost2000to2017years1 %>%
+  mutate(winshares = point_shares/games_played)%>%
+  arrange(desc(winshares))
+
+#group by the team and point shares
+nhlteamranking <- nhleffectiveness %>%
+  group_by(team) %>%
+  summarise(avgpickvalue = mean(winshares, na.rm = TRUE))%>%
+  arrange(desc(avgpickvalue))
+
