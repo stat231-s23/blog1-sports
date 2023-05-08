@@ -118,7 +118,7 @@ nhlmosteffectivetotal1 <- nhlmosteffective %>%
 INSERT PHOTO
 
 Once I created the variable I aimed to explore what countries produce the best valued picks. To gauge this I averaged the value of each pick for each country represented in the data set and the results are shown in the figure below:
-```{r echo=FALSE, message=FALSE, fig.height= 3}
+```{r echo=FALSE, message=FALSE}
 #This data is only representative of skaters
 #make variable that multiplies pick in draft to winshares
 nhlmosteffectiveskater1 <- nhlmosteffectivetotal1 %>%
@@ -127,7 +127,7 @@ nhlmosteffectiveskater1 <- nhlmosteffectivetotal1 %>%
 
 # combine the map to the countries for sskaters
 worldtotalmap <- nhlmosteffectiveskater1 %>%
-  left_join(world_map, by = c("nationality" = "ID"), multiple = "all")%>%
+  inner_join(world_map, by = c("nationality" = "ID"), multiple = "all")%>%
   mutate_if(is.numeric, ~replace_na(.,0))
 
 
@@ -136,18 +136,40 @@ playerworldranking <- worldtotalmap %>%
   filter(position != "G")%>%
   group_by(nationality, geom) %>%
   summarise(avgpickvalue = mean(valueofskater, na.rm = TRUE))%>%
-  arrange(desc(avgpickvalue))
-  
+  arrange(desc(avgpickvalue)) %>%
+  mutate(avgpickvalue = ifelse(avgpickvalue==0, NA, avgpickvalue)) %>%
+  st_as_sf()
 
-#make graph to represent graph of best valued picks for skaters
-ggplot(playerworldranking, aes(geometry = geom, fill = avgpickvalue)) +
+p <- ggplot(data=playerworldranking
+             , aes(geometry = geom), fill = avgpickvalue)) +
   geom_sf() +
   theme_void() +
   labs(fill = "Value Of Pick Ranking"
        , title = "Best Valued Skater Picks Based on Home Country")+
   scale_fill_viridis(option = "magma", direction = -1) +
   theme(legend.position = "top")
+ 
+my_palette <- colorQuantile(rev(viridis::viridis(3))
+                  , domain =  playerworldranking$avgpickvalue, n=5)
 
+leaflet(data = playerworldranking) %>% 
+  #addTiles() %>%
+  addPolygons(
+    fillColor = ~my_palette(avgpickvalue), 
+    stroke = FALSE,
+    popup = ~ glue::glue("Country: {str_to_title(nationality)} <br> 
+                         Average pick: {round(avgpickvalue,3)}")
+    , opacity = 1, fillOpacity = 1
+    , labelOptions= labelOptions(direction = 'auto')
+    , color='#333333'
+    , highlightOptions = highlightOptions(color='#000000', weight = 2
+                                            , bringToFront = TRUE
+                                            , sendToBack = TRUE)) %>%
+    addLegend(pal = my_palette,
+            values = playerworldranking$avgpickvalue,
+           position = "topright",
+           title = "title for legend
+            <br> (subtitle)", opacity = 1)
 
 ```
 
@@ -213,7 +235,7 @@ In terms of powerhouse teams no real country stood out from the pack. The only r
 The final observation I wanted to look at was which teams make the best valued picks across the NHL. I did not filter out just to successful players because when it comes to teams picking players I wanted to look at the overall body of work of the team rather than just the successes. For the metric used to evaluate the best teams I just used the win shares variable because I thought this would give me the best look at both goalies and skaters combined when it comes to just looking at teams.
 
 The results of my findings are shown in the table below:
-```{r echo=FALSE, message= FALSE}
+```{r echo=FALSE}
 #add points per game to the skaters
 nhlppg <- nhl %>%
   mutate(ppg = points/games_played)%>%
