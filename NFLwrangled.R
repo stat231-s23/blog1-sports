@@ -5,6 +5,7 @@ library(tidyverse)
 library(sf)
 library(ggplot2)
 library(car)
+library(RColorBrewer)
 
 #import the NFL draft dataset
 nfl <- read_csv("dataforNFL/nfl_draft_picks.csv")
@@ -130,6 +131,7 @@ ggplot(nfl_final, aes(geometry=geom, fill = Overall)) +
        , title = "  U.S. College Football Athletes Drafted in the First Round (from 2006 to 2021)") +
          theme(legend.position="bottom") +
   scale_fill_distiller(palette = "Spectral", direction = 1) 
+
 
 #user interactive table 
 library(DT)
