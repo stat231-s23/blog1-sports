@@ -24,16 +24,19 @@ library(DT)
 library(viridis)
 library(ggplot2)
 library(car)
-library(plotly)
+library(leaflet)
 ```
-INSERT PHOTO
+
+```{r, out.width="80%", fig.align="center"}
+knitr::include_graphics("pictures/ALLSPORTSPICDS.jpeg")
+```
 
 # Intro
 
 In this project, our group set out to take a more in-depth analysis of draft picks over the last 20 years of three of the four major sports leagues in North America. Since different sports leagues conduct their drafts in different fashions we decided to evaluate each sport differently to fit how the draft process is designed. In terms of each sport the NHL drafts players at the age of 18 and players are usually a few years away from being ready to play in the NHL. In the NBA, players have to be at least 19 years old to be drafted and once they are drafted they usually are meant to go directly to the NBA. For the NFL, the rules are that a player has to be out of high school for three years or has used up all their college-eligibility for the next football season. We pulled our dataset for the [NHL](https://www.kaggle.com/datasets/mattop/nhl-draft-hockey-player-data-1963-2022), [NBA](https://www.kaggle.com/datasets/benwieland/nba-draft-data), and the [NFL](https://www.kaggle.com/datasets/jacklichtenstein/espn-nfl-draft-prospect-data?select=nfl_draft_prospects.csv) from Kaggle. 
 
 # NHL 
-In the NHL there are seven rounds of draft picks for all 32 teams. Many of these players don’t pan out because the process of getting to the NHL is different than most other sports. Most players are drafted after their senior year of high school. Unless you are the number or some years the top few picks then you will not be going to the NHL right away. You will have to play junior hockey in order to develop and prepare your body for the NHL game. There are two different paths most people take to develop, Major Junior Hockey and College Hockey. There are other paths but these are the two most common. So most teams draft players in the hopes that they will develop into an NHL player instead of other sports when they are “pro-ready” at the time of the draft. Because of this process many players do not pan out into what they were drafted to be. So in my analysis of draft picks I will start off by looking at those players who did pan out.
+In the NHL there are seven rounds of draft picks for all 32 teams. Many of these players don’t pan out because the process of getting to the NHL is different than most other sports. Most players are drafted after their senior year of high school. Unless you are one of the top few picks, then you will not be going to the NHL right away. You will have to play junior hockey in order to develop and prepare your body for the NHL game. There are two different paths most people take to develop, Major Junior Hockey and College Hockey. There are other paths but these are the two most common. So most teams draft players in the hopes that they will develop into an NHL player instead of other sports when they are “pro-ready” at the time of the draft. Because of this process many players do not pan out into what they were drafted to be. So in my analysis of draft picks I will start off by looking at those players who did pan out.
 
 I took the draft data from those after the year 2000 and before the year 2018. I removed the last 5 years mainly because many players from those draft classes have not had enough experience or have not had enough time to develop into NHL players yet so their stats will not be a representation of what they can do in the NHL. I also looked at players that had at least 80 games played in the NHL. My representation of a successful NHL player is one that has played around a season in the NHL which is 82 games so I thought that 80 would be an appropriate number. 
 
@@ -45,9 +48,15 @@ With the values in the dataset I tried to create a variable that would represent
 
 “Why 7/12? At even strength a team has six players on the ice, five skaters and one goalie. Imagine each of these players having two chips to contribute to one of two buckets: offense and defense. Collectively the skaters will contribute five chips to the offensive bucket and five chips to the defensive bucket. However, the goalie will contribute both of his chips to the defensive bucket, giving the defensive bucket seven of the twelve chips.”
 
-This dataset already calculated point shares. From there I created a variable that I labeled win shares. I calculated win shares by dividing points shares by the amount of games played. I did this to see the point shares per game because it appeared from the data that those who had been in the league longer had a higher point share than those who did not have as many games played, so this evened it out for every player regardless of experience. Finally, I created a variable in which I believe calculates the value of each pick in the NHL. This variable was derived by multiplying win shares by points a player has per game and the final measurement I added was the overall pick of a player. 
 
-The reason I added win shares and points per game was because wins shares takes in defensive stats as well and only looks for goals for and against while it does not take in the total amount of points the players actually score. I added in the overall pick because this is giving us which picks have the best overall value. This means that if a player selected with the 100th pick is putting up the same production that a player that was taken with the 10th pick then the player who was picked 100th has the better value.
+```{r, out.width="80%", fig.align="center"}
+knitr::include_graphics("pictures/STATHOCKEYPICTUREDS.jpeg")
+```
+
+
+This dataset already calculated point shares. From there I created a variable that I labeled win shares. I calculated win shares by dividing points shares by the amount of games played. I did this to see the point shares per game because it appeared from the data that those who had been in the league longer had a higher point share than those who did not have as many games played, so this evened it out for every player regardless of games played. Finally, I created a variable in which I believe calculates the value of each pick in the NHL. This variable was derived by multiplying win shares by points a player has per game and the final measurement I added was the overall pick of a player. 
+
+The reason I added win shares and points per game was because wins shares takes in defensive stats as well and only looks for goals for and against while a player is on the ice while it does not take in the total amount of points the players actually score. I added in the overall pick because this is giving us which picks have the best overall value. This means that if a player selected with the 100th pick is putting up the same production that a player that was taken with the 10th pick then the player who was picked 100th has the better value.
 
 ```{r include=FALSE}
 #initial importing of the file
@@ -118,7 +127,7 @@ nhlmosteffectivetotal1 <- nhlmosteffective %>%
 INSERT PHOTO
 
 Once I created the variable I aimed to explore what countries produce the best valued picks. To gauge this I averaged the value of each pick for each country represented in the data set and the results are shown in the figure below:
-```{r echo=FALSE, message=FALSE}
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 #This data is only representative of skaters
 #make variable that multiplies pick in draft to winshares
 nhlmosteffectiveskater1 <- nhlmosteffectivetotal1 %>%
@@ -140,14 +149,6 @@ playerworldranking <- worldtotalmap %>%
   mutate(avgpickvalue = ifelse(avgpickvalue==0, NA, avgpickvalue)) %>%
   st_as_sf()
 
-p <- ggplot(data=playerworldranking
-             , aes(geometry = geom), fill = avgpickvalue)) +
-  geom_sf() +
-  theme_void() +
-  labs(fill = "Value Of Pick Ranking"
-       , title = "Best Valued Skater Picks Based on Home Country")+
-  scale_fill_viridis(option = "magma", direction = -1) +
-  theme(legend.position = "top")
  
 my_palette <- colorQuantile(rev(viridis::viridis(3))
                   , domain =  playerworldranking$avgpickvalue, n=5)
@@ -168,12 +169,13 @@ leaflet(data = playerworldranking) %>%
     addLegend(pal = my_palette,
             values = playerworldranking$avgpickvalue,
            position = "topright",
-           title = "title for legend
-            <br> (subtitle)", opacity = 1)
+           title = "Best Valued Skaters Drafted in NHL
+            <br> (Based on Value of Pick and Home Country)", opacity = 1)
 
 ```
 
-The first map shows us the skaters and although it may be difficult to see Belarus leads the NHL in producing players with the best valued picks. This was surprising to me because as an avid hockey fan I don’t necessarily look at Belarus as a hotspot for hockey players and have not heard of many that have originated there. But upon a further look in the data this is only the case because there are only two successful NHL players that have originated from Belarus and one was extremely successful so this could be a reason the data shows Belarus at the top.
+
+The first map shows us the skaters and Belarus leads the NHL in producing players with the best valued picks. This was surprising to me because as an avid hockey fan I don’t necessarily look at Belarus as a hotspot for hockey players and have not heard of many that have originated there. But upon a further look in the data this is only the case because there are only two successful NHL players that have originated from Belarus and one was extremely successful so this could be a reason the data shows Belarus at the top.
 
 Another observation I derived from the first map was in regards to the powerhouse countries. I consider the powerhouse countries to be:
 
@@ -184,7 +186,9 @@ Another observation I derived from the first map was in regards to the powerhous
 - Finland
 - Czech Republic
 
-Out of these countries it appears that the Czech Republic and Russia are at the top of the rankings while the rest of the countries have a similar average value. This is interesting to me because when it comes to international play the United States and Canada are always pretty dominant so it would be expected that they have the best valued picks. I believe that this is not the case because when it comes to scouting the U.S. born and the Canadian born players there is a vast array of work against the best talents that scouts can see while with the international players there are fewer games and sometimes not against as good of talent seen in North America. There is another factor that could play a role in the result. When players get drafted from overseas there is always the risk that they will not come to the United States to play hockey and there are many factors for this. Some have already signed pro contracts in their respective homes and are legally required to stay overseas for a few years. Others have fallen in the draft because of threats from their country to come over and play. So because they fall in the draft they might have the same production and talent as those at the top but are ranked higher in the metric because they were drafted lower.
+Out of these countries it appears that the Czech Republic and Russia are at the top of the rankings while the rest of the countries have a similar average value. This is interesting to me because when it comes to international play the United States and Canada are always pretty dominant so it would be expected that they have the best valued picks. I believe that this is not the case because when it comes to scouting the U.S. born and the Canadian born players there is a vast array of work against the best talents that scouts can see while with the international players there are fewer games and sometimes not against as good of talent seen in North America. This would lead to international players being drafted lower than North American born skaters leading to a higher valuation in the calculation.  
+
+There is another factor that could play a role in the result. When players get drafted from overseas there is always the risk that they will not come to the United States to play hockey and there are many factors for this. Some have already signed pro contracts in their respective homes and are legally required to stay overseas for a few years. Others have fallen in the draft because of threats from their country to come over and play. So because they fall in the draft they might have the same production and talent as those at the top but are ranked higher in the metric because they were drafted lower.
 
 
 ## Goaltenders
@@ -200,7 +204,7 @@ Goalie Point Shares = (2 / 7) × ((marginal goals against) / (marginal goals per
 “Why 2/7? Of the seven chips contributed to the defensive bucket, two came from the goalie.”
 
 For calculating the value of each pick. I still used the win shares variable. but this time I just multiplied the win shares variable with the overall pick variable and that is how I calculated the value for each pick. I then completed the same process of summarizing the results by country and inputting it into a spatial map. The results are shown below:
-```{r echo=FALSE, message=FALSE, fig.height= 3}
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.height= 3}
 # make a plot for where the best valued goalies stem from
 goaliedata <- nhlmosteffectivetotal1 %>%
   filter(position == "G")%>%
@@ -217,14 +221,34 @@ goalieworldmap <- goaliedata %>%
 goalieworldranking <- goalieworldmap %>%
   group_by(nationality, geom) %>%
   summarise(avgpickvalue = mean(valueofpick, na.rm = TRUE))%>%
-  arrange(desc(avgpickvalue))
+  arrange(desc(avgpickvalue)) %>%
+  mutate(avgpickvalue = ifelse(avgpickvalue==0, NA, avgpickvalue)) %>%
+  st_as_sf()
 
-ggplot(goalieworldranking, aes(geometry = geom, fill = avgpickvalue)) +
-  geom_sf() +
-  theme_void() +
-  labs(fill = "Value Of Pick Ranking"
-       , title = "Best Valued Goaltender Picks Based on Home Country")+
-  scale_fill_viridis(option = "magma", direction = -1)
+ 
+my_palette <- colorQuantile(rev(viridis::viridis(4))
+                  , domain =  goalieworldranking$avgpickvalue, n=5)
+
+leaflet(data = goalieworldranking) %>% 
+  #addTiles() %>%
+  addPolygons(
+    fillColor = ~my_palette(avgpickvalue), 
+    stroke = FALSE,
+    popup = ~ glue::glue("Country: {str_to_title(nationality)} <br> 
+                         Average pick: {round(avgpickvalue,3)}")
+    , opacity = 1, fillOpacity = 1
+    , labelOptions= labelOptions(direction = 'auto')
+    , color='#333333'
+    , highlightOptions = highlightOptions(color='#000000', weight = 2
+                                            , bringToFront = TRUE
+                                            , sendToBack = TRUE)) %>%
+    addLegend(pal = my_palette,
+            values = goalieworldranking$avgpickvalue,
+           position = "topright",
+           title = "Best Valued Skaters Drafted in NHL
+            <br> (Based on Value of Pick and Home Country)", opacity = 1)
+
+
 ```
 
 In the second graph that described goalies, the number for value of pick is much higher because points per game is not included and goalies are usually taken later in the draft. The results showed that Switzerland led the pack. 
@@ -263,14 +287,19 @@ nhlteamranking%>%
             options = list(pageLength = 10, autoWidth = TRUE))
 ```
 
-## Analysis of Results
 
-These three graph visualizations gave me some interesting data about the NHL and the value of the picks in the draft.
+The final table I feel is the best data for looking at which teams have the best scouts and make the best valued picks in the NHL. 
 
+This table is particularly interesting to me because it allows us to see which teams over the last 20 years have performed well in the draft and those that have performed poorly. It also evaluates which teams have built their teams through the draft rather than those who have traded for their teams.
 
+For example, take a look at the Pittsburgh Penguins who are rated the most effective team when it comes to drafting in the last 20 years. This is a team who has won 3 championships since the year 2000 and has kept their main core together for the better part of 15 years. This is a team who built through the draft and did so good in the draft that they were able to keep their core together.
 
+On the other hand, the Vancouver Canucks are rated the worst team on this list in terms of picking valuable draft picks. This makes sense because over the last 20 years they have not had much success only reaching the Stanley Cup final once. They have drafted a few players that have had success but as an overall body of work they have not drafted well. This also shows up because of their dysfunctional organization that goes through many coaching changes because the team is not performing. With this data the owner should reevaluate and realize that the front office is not doing a good enough job at picking players for their team.
 
+Other notable results:
 
+- Vegas Golden Knights: they are an expansion team that has not relied too much on the draft in the years they have been in the league. They have traded away a lot of their early draft picks and have been in “win now” mode because of their Stanley Cup appearance in the first year of being a franchise
+- Arizona Coyotes: have been known for being an underperforming team over the last twenty years. Based on the calculated matrix, it appears that they are one of the best teams when it comes to drafting players. There could be a few explanations for this fact. One could be that they have traded away players they drafted and they then panned out into very successful NHLers. Another reason could be that they have consistently had impact players but have not had enough depth as a team to be at the top of the league.
 
 
 # NFL 
@@ -493,7 +522,7 @@ ggplot(average_points_per_game, aes(geometry=geom, fill = finalMean)) +
   scale_fill_viridis_c(option = "magma", direction = -1)
 ```
 
-```{r echo=FALSE, message=FALSE}
+```{r echo=FALSE, message=FALSE, warning = FALSE}
 # performing data analysis to calculate the value pick of each NBA player using statistically proven method
 
 value_pick_nba <- nba_team_states %>%
@@ -517,7 +546,7 @@ ggplot(value_pick_nba, aes(geometry=geom, fill = finalMeanValuePick)) +
   scale_fill_viridis_c(option = "blues", direction = -1)
 ```
 
-```{r echo=FALSE, message=FALSE}
+```{r echo=FALSE, message=FALSE, warning = FALSE}
 #creating a table to display the top 3 value picks from each State
 
 top_valuepicks <- nba_team_states %>%
