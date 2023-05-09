@@ -261,7 +261,7 @@ In terms of powerhouse teams no real country stood out from the pack. The only r
 The final observation I wanted to look at was which teams make the best valued picks across the NHL. I did not filter out just to successful players because when it comes to teams picking players I wanted to look at the overall body of work of the team rather than just the successes. For the metric used to evaluate the best teams I just used the win shares variable because I thought this would give me the best look at both goalies and skaters combined when it comes to just looking at teams.
 
 The results of my findings are shown in the table below:
-```{r echo=FALSE}
+```{r echo=FALSE, warning=FALSE}
 #add points per game to the skaters
 nhlppg <- nhl %>%
   mutate(ppg = points/games_played)%>%
@@ -280,7 +280,8 @@ nhleffectiveness <- nhlpost2000to2017years1 %>%
 nhlteamranking <- nhleffectiveness %>%
   group_by(team) %>%
   summarise(avgpickvalue = mean(winshares, na.rm = TRUE) * 100)%>%
-  arrange(desc(avgpickvalue))
+  arrange(desc(avgpickvalue))%>%
+  mutate(across(is.numeric, round, digits = 3))
 
 nhlteamranking%>%
   select(team, avgpickvalue) %>% 
