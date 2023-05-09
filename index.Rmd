@@ -475,10 +475,11 @@ Another aspect of the map to consider are the states colored in gray. The gray-c
 
 # NBA
 
-The NBA Draft is an annual event where the 30 NBA teams in the U.S select players to join their rosters. These players usually come from college basketball programs, international leagues, or high school graduates. The drafting order is determined by a combination of regular-season performance and a lottery system. For instance, teams that perform poorly during the regular season have a higher chance of securing a top pick in the draft, while successful teams pick later.
+The NBA Draft is an annual event where the 30 NBA teams in the U.S. select players to join their rosters. These players usually come from college basketball programs, international leagues, or high school graduates. The drafting order is determined by a combination of regular-season performance and a lottery system. For instance, teams that perform poorly during the regular season have a higher chance of securing a top pick in the draft, while successful teams pick later.
 
+I used a dataset of the career stats of NBA players from the last 20 NBA Drafts. The dataset included information about the players, teams, and draft picks. Additionally, it also included various attributes, such as the players' names, positions, college or international team affiliations, and pre-draft statistics like points per game, rebounds, and assists. Furthermore, the dataset may include details about the draft itself, like the year, round, and overall pick number. By analyzing this dataset, I aimed to uncover trends, evaluate players, and gain insights into the drafting process and its impact on team performance and player development. This valuable information can help teams make informed decisions in future drafts and enable the general public to better understand the intricacies of the NBA Draft.
 
-
+I used a spatial map to represent the average points of NBA players that display the geographical distribution of player scoring averages based on their origins. This map typically plots the players' state team, with color-coding indicating their average points scored per game throughout their careers.
 
 ```{r echo=FALSE, message=FALSE}
 library(tidyverse) 
@@ -540,6 +541,10 @@ ggplot(average_points_per_game, aes(geometry=geom, fill = finalMean)) +
   scale_fill_viridis_c(option = "magma", direction = -1)
 ```
 
+I used a spatial map representing the value pick of NBA players that displays the geographical distribution of drafted players based on their value or success in the league. This map typically plots the players' hometeam, with color-coding indicating their relative value or performance.
+
+This spatial map helps identify patterns in the distribution of high-value players across different regions. It can reveal potential hotspots for player development, shed light on the effectiveness of college programs and international leagues in producing top talent, and provide insights into the global reach of the NBA. By analyzing this spatial representation, teams, scouts, and analysts can better target their scouting efforts, focus on regions with a high density of valuable players, and potentially uncover untapped talent
+
 ```{r echo=FALSE, message=FALSE, warning = FALSE}
 # performing data analysis to calculate the value pick of each NBA player using statistically proven method
 
@@ -563,6 +568,8 @@ ggplot(value_pick_nba, aes(geometry=geom, fill = finalMeanValuePick)) +
        , caption = "Source: NBA Dataset on Kaggle") +
   scale_fill_viridis_c(option = "blues", direction = -1)
 ```
+
+I created an interactive table displaying the top 3 value picks from each state. It is a dynamic, user-friendly tool that allows users to explore and compare the best-performing NBA players hailing from different states. This table typically presents columns including player name, state, team, and key performance metrics like valuepick and other advanced statistics.
 
 ```{r echo=FALSE, message=FALSE}
 #creating an interactive table to display the top 3 value picks from each State
@@ -592,9 +599,14 @@ final_valuepicks_display%>%
             options = list(pageLength = 10, autoWidth = TRUE))
 ```
 ## Analysis
-  
-  
 
+An analysis of a spatial map representing the value pick and average points scored of NBA players helps provide valuable insights into the geographical distribution of player performance. We can use the spatial map to analyze the following trends:
+
+Regional Patterns: Observe any regional trends or hotspots for high-value picks and prolific scorers. Are certain areas consistently producing top-tier talent or high-scoring players? This information can help teams target their scouting efforts and identify regions with strong basketball programs or player development systems. We can see that Colorado, Louisiana, and Ohio have the highest average number of points scored by NBA players.
+
+College and International Influence: Examine the role of college programs and international leagues in player development. Are certain colleges or countries more successful in producing high-value picks or high-scoring players? This can inform teams' scouting strategies and highlight the effectiveness of specific programs or leagues. The table displays the top three value picks from every state along with the college program they were enrolled in.
+
+Comparison Between Value Pick and Scoring Ability: Investigate the relationship between a player's value pick and their scoring ability. Are high-value players generally also high scorers, or do some regions produce high-value picks with diverse skill sets? We can see that NBA players who play for Oklahoma, Ohio, Colorado, and Indiana have the highest value pick compared to other states in the US.   
 
 # Final Thoughts Of Results
 Based on exploring the three different sports, each sport produces different results and each sport is hard to compare based on the process that each is conducted. Each sport has its own intricacies that you have to take into account. For example, in the NBA and NFL players have to declare to be included in the draft while the NHL can choose anyone regardless if they declare or not.
@@ -614,9 +626,8 @@ NFL
 - Front office members can stay away from the upper Northeast region because there has not been any players that have been drafted in the first round and if they are looking for impact players they can save time and look elsewhere.
 
 NBA
-F
 
-
+- By carefully analyzing a spatial map representing the value pick and average points scored of NBA players, teams, scouts, and analysts can uncover valuable insights into player origins, development, and performance. Additionally, such an analysis can contribute to a better understanding of regional influences on basketball styles and help reveal patterns and trends in the development of high-value NBA talent.
 
 Even though this data is useful there are some limitations to the findings. For example, it is hard to judge the intangibles of a player from this data. It is difficult to generalize that if historically players that originate from a certain region pan out that they will continue. This is because there aren't always the same coaches in the regions and the training may change over the years so new powerhouses can emerge. Also, you cannot take all of these findings literally. Just because on average some places may not produce the best valued picks there are always generational talents that emerge. For example, in the NHL dataset Connor Mcdavid who is currently the best player in the NHL by a wide margin is not at the top of the rankings for being the best valued. This is because he was the number one overall pick and does not get the same leniency that a player that was picked 100th and is a consistent player. It doesn’t mean that the Edmonton Oilers should have passed on a generational talent to get a player that they were unsure of. 
 
@@ -647,5 +658,10 @@ Deckmyn, Alex (2022). "maps: Draw Geographical Maps," R package version 3.4.1, a
 
 <!-- R package -->
 Cheng Joe (2023). "leaflet: Create Interactive Web Maps with the JavaScript 'Leaflet' Library," R package version 2.1.2, available at <https://cran.r-project.org/web/packages/leaflet/index.html>.
+
+<!-- Dataset -->
+https://www.kaggle.com/datasets/benwieland/nba-draft-data
+
+
 
 
