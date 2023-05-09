@@ -267,7 +267,7 @@ In terms of powerhouse teams no real country stood out from the pack. The only r
 The final observation I wanted to look at was which teams make the best valued picks across the NHL. I did not filter out just to successful players because when it comes to teams picking players I wanted to look at the overall body of work of the team rather than just the successes. For the metric used to evaluate the best teams I just used the win shares variable because I thought this would give me the best look at both goalies and skaters combined when it comes to just looking at teams.
 
 The results of my findings are shown in the table below:
-```{r echo=FALSE}
+```{r echo=FALSE, warning = FALSE}
 #add points per game to the skaters
 nhlppg <- nhl %>%
   mutate(ppg = points/games_played)%>%
@@ -286,7 +286,8 @@ nhleffectiveness <- nhlpost2000to2017years1 %>%
 nhlteamranking <- nhleffectiveness %>%
   group_by(team) %>%
   summarise(avgpickvalue = mean(winshares, na.rm = TRUE) * 100)%>%
-  arrange(desc(avgpickvalue))
+  arrange(desc(avgpickvalue))%>%
+  mutate(across(is.numeric, round, digits = 3))
 
 nhlteamranking%>%
   select(team, avgpickvalue) %>% 
@@ -314,7 +315,7 @@ Other notable results:
 
 The NFL draft process occurs when NFL teams pick players, often attending and playing in colleges and universities across the country. The pattern that most typically occurs is the best college football players in the country are often picked in the first couple of rounds. For example, the first player picked in the first round of the draft is likely very talented and highly sought-after. A player’s performance at their college or university is an important consideration for how likely, or quickly they will be picked by an NFL team. Something to consider when looking at players drafted in the NFL, and their corresponding college, is whether there are certain college football teams that produce some of the first picks in the NFL draft. Throughout this analysis we can determine which U.S. states produce some of the top overall NFL draft picks over fifteen years. This information can help us identify states with the top college football players, as well as determine if there are any correlations between the state a player went to school in and the NFL team they were drafted to. 
 
-The data below represents the NFL draft process over a fifteen year period (2006 to 2021). Including in this data included players' names, school they attended, NFL team they were drafted to, the overall pick of each player (ranged 1-32), and the year players were drafted. The map below specifically looks at players' colleges and universities in states across the country and the players' corresponding overall pick number. The states in the map below are filled according to a player's overall pick number. The darker colors on the map indicate a higher pick in the round, whereas the blues and greens correspond to a lower overall pick in the first round. 
+The data below represents the NFL draft process over a fifteen year period (2006 to 2021). Including in this data included players' names, school they attended, NFL team they were drafted to, the overall pick of each player (ranged 1-32), and the year players were drafted. The map below specifically looks at players' colleges and universities in states across the country and that players' corresponding overall pick number. 
 
 
 ```{r include=FALSE}
