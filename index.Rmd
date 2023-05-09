@@ -130,7 +130,7 @@ knitr::include_graphics("pictures/skatergifds.gif")
 ```
 
 Once I created the variable I aimed to explore what countries produce the best valued picks. To gauge this I averaged the value of each pick for each country represented in the data set and the results are shown in the figure below:
-```{r echo=FALSE, message=FALSE, warning=FALSE}
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.height= 3}
 #This data is only representative of skaters
 #make variable that multiplies pick in draft to winshares
 nhlmosteffectiveskater1 <- nhlmosteffectivetotal1 %>%
@@ -196,7 +196,12 @@ There is another factor that could play a role in the result. When players get d
 
 ## Goaltenders
 
-INSERT PHOTO
+
+```{r, out.width="80%", fig.align="center"}
+knitr::include_graphics("pictures/GOALIEGIFDS.gif")
+```
+
+
 
 In terms of goaltenders, I used a slightly different calculation for determining the value of each goalie pick. With goaltenders you cannot use points per game and you cannot compare win shares to players because goalies play less games and the point share statistic is calculated differently for goaltenders. 
 
