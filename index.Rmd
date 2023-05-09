@@ -25,6 +25,7 @@ library(viridis)
 library(ggplot2)
 library(car)
 library(leaflet)
+library(rmdformats)
 ```
 
 ```{r, out.width="80%", fig.align="center"}
@@ -129,7 +130,7 @@ knitr::include_graphics("pictures/skatergifds.gif")
 ```
 
 Once I created the variable I aimed to explore what countries produce the best valued picks. To gauge this I averaged the value of each pick for each country represented in the data set and the results are shown in the figure below:
-```{r echo=FALSE, message=FALSE, warning=FALSE}
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.height= 3}
 #This data is only representative of skaters
 #make variable that multiplies pick in draft to winshares
 nhlmosteffectiveskater1 <- nhlmosteffectivetotal1 %>%
@@ -195,7 +196,12 @@ There is another factor that could play a role in the result. When players get d
 
 ## Goaltenders
 
-INSERT PHOTO
+
+```{r, out.width="80%", fig.align="center"}
+knitr::include_graphics("pictures/GOALIEGIFDS.gif")
+```
+
+
 
 In terms of goaltenders, I used a slightly different calculation for determining the value of each goalie pick. With goaltenders you cannot use points per game and you cannot compare win shares to players because goalies play less games and the point share statistic is calculated differently for goaltenders. 
 
@@ -261,7 +267,7 @@ In terms of powerhouse teams no real country stood out from the pack. The only r
 The final observation I wanted to look at was which teams make the best valued picks across the NHL. I did not filter out just to successful players because when it comes to teams picking players I wanted to look at the overall body of work of the team rather than just the successes. For the metric used to evaluate the best teams I just used the win shares variable because I thought this would give me the best look at both goalies and skaters combined when it comes to just looking at teams.
 
 The results of my findings are shown in the table below:
-```{r echo=FALSE, warning=FALSE}
+```{r echo=FALSE, warning = FALSE}
 #add points per game to the skaters
 nhlppg <- nhl %>%
   mutate(ppg = points/games_played)%>%
@@ -427,7 +433,7 @@ nfl_final <- nfl_with_states %>%
   right_join(states_map, by = c("state_full"="ID"))
 ```
 
-
+## Map
 
 ```{r echo=FALSE, message=FALSE}
 #create plot on US country map
@@ -443,6 +449,7 @@ ggplot(nfl_final, aes(geometry=geom, fill = Overall)) +
   scale_fill_distiller(palette = "Spectral", direction = 1) 
 ```
 
+## Table
 
 The table below includes results from the NFL Draft process from 2006 to 2021:
 ```{r echo=FALSE, message=FALSE}
