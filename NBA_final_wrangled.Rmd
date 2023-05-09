@@ -1,0 +1,110 @@
+---
+title: "PUG Blog Project(NBA Drafting Data)"
+output: pdf_document
+date: "2023-05-02"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse) 
+library(mdsr)
+library(spatial)
+library(ggplot2)
+
+#importing 20 years of NBA Draft dataset, State Teams, and State Abbreviations
+NBA_data <- read_csv("dataforNBA/NBA_draft_data.csv")
+NBA_abb <- read_csv("dataforNBA/NBA_abbreviations.csv")
+NBA_states <- read_csv("dataforNBA/NBA_state_names.csv")
+
+#cleaning data for visualizations by eliminating the variables not needed
+
+nba_filtered_data <- NBA_data %>%
+  rename_at('Tm', ~'Franchise')%>%
+  filter(!(DraftYear %in% c(1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999)))%>%
+  select(-c(playerurl, DraftYr, MPG, PPG, RPG, APG, VORP, BPM, "WS/48"))%>%
+  filter(!(College %in% c(NA)))%>%
+  arrange(tolower(Franchise))
+
+
+#adding team name and state for each player for spatial visualization using inner join function
+
+nba_teams <- inner_join(nba_filtered_data, NBA_abb, by=c("Franchise" = "Abbreviation/"))%>%
+  rename_at('Franchise.y', ~'NBA Team(s)')
+
+nba_team_states <- inner_join(nba_teams, NBA_states, by=c("NBA Team(s)" = "NBA Team(s)"))
+
+#creating sf object for US States
+
+states_map <- maps::map("state", regions = "."
+                        , plot = FALSE, fill = TRUE) %>%
+  sf::st_as_sf()
+
+state_info <- data.frame(state_full = tolower(state.name)
+                         , 'State Name' = state.abb)
+
+# performing data analysis to calculate the average points scored by each NBA player
+
+average_points_per_game <- nba_team_states %>% 
+  drop_na() %>%
+  mutate(avgRaw = TOTPTS/G) %>%
+  rename(state = 'State Name') %>%
+  group_by(state) %>%
+  summarise(finalMean = mean(avgRaw))%>%
+  rename(ID = state) %>%
+  mutate(ID = tolower(ID)) %>%
+  right_join(states_map, by = "ID") 
+
+#creating the U.S. States map to compare the average number of points scored by players per game
+
+ggplot(average_points_per_game, aes(geometry=geom, fill = finalMean)) +
+  geom_sf() +
+  theme_void() +
+  labs(fill = "Average Points(per game)"
+       , title = "Average Points Scored by NBA Players in U.S States."
+       , caption = "Source: NBA Dataset on Kaggle") +
+  scale_fill_viridis_c(option = "magma", direction = -1)
+
+# performing data analysis to calculate the value pick of each NBA player using statistically proven method
+
+value_pick_nba <- nba_team_states %>%
+  drop_na() %>%
+  mutate(valuepick = WS/G)%>%
+  rename(statedata = 'State Name')%>%
+  group_by(statedata)%>%
+  summarise(finalMeanValuePick = mean(valuepick))%>%
+  rename(ID = statedata) %>%
+  mutate(ID = tolower(ID)) %>%
+  right_join(states_map, by = "ID")
+
+#creating the U.S. States map to compare the value pick of NBA players from each state
+
+ggplot(value_pick_nba, aes(geometry=geom, fill = finalMeanValuePick)) +
+  geom_sf() +
+  theme_void() +
+  labs(fill = "Mean Value Pick"
+       , title = "Average Mean Value of NBA Players in U.S States."
+       , caption = "Source: NBA Dataset on Kaggle") +
+  scale_fill_viridis_c(option = "blues", direction = -1)
+
+#creating a table to display the top 3 value picks from each State
+
+top_valuepicks <- nba_team_states %>%
+  mutate(valuepick = WS/G)%>%
+  rename(statedata = 'State Name')%>%
+  rename(ID = statedata) %>%
+  mutate(ID = tolower(ID)) %>%
+  right_join(states_map, by = "ID") %>%
+  arrange(desc(valuepick)) %>%
+  drop_na() %>%
+  group_by(ID) %>%
+  slice(1:3)
+
+top_valuepicks_print <- top_valuepicks %>%
+  rename(Pick = 'Pk')%>%
+  rename(State = 'ID')
+  
+final_valuepicks_display <- top_valuepicks_print[, c("Pick", "Franchise", "Player", "College", "NBA Team(s)", "State", "valuepick")]
+```
