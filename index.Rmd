@@ -475,6 +475,11 @@ Another aspect of the map to consider are the states colored in gray. The gray-c
 
 # NBA
 
+The NBA Draft is an annual event where the 30 NBA teams in the U.S select players to join their rosters. These players usually come from college basketball programs, international leagues, or high school graduates. The drafting order is determined by a combination of regular-season performance and a lottery system. For instance, teams that perform poorly during the regular season have a higher chance of securing a top pick in the draft, while successful teams pick later.
+
+
+
+
 ```{r echo=FALSE, message=FALSE}
 library(tidyverse) 
 library(mdsr)
@@ -560,7 +565,7 @@ ggplot(value_pick_nba, aes(geometry=geom, fill = finalMeanValuePick)) +
 ```
 
 ```{r echo=FALSE, message=FALSE}
-#creating a table to display the top 3 value picks from each State
+#creating an interactive table to display the top 3 value picks from each State
 
 top_valuepicks <- nba_team_states %>%
   mutate(valuepick = WS/G)%>%
