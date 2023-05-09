@@ -49,7 +49,7 @@ With the values in the dataset I tried to create a variable that would represent
 “Why 7/12? At even strength a team has six players on the ice, five skaters and one goalie. Imagine each of these players having two chips to contribute to one of two buckets: offense and defense. Collectively the skaters will contribute five chips to the offensive bucket and five chips to the defensive bucket. However, the goalie will contribute both of his chips to the defensive bucket, giving the defensive bucket seven of the twelve chips.”
 
 
-```{r, out.width="80%", fig.align="center"}
+```{r, out.width="40%", fig.align="center"}
 knitr::include_graphics("pictures/STATHOCKEYPICTUREDS.jpeg")
 ```
 
@@ -124,7 +124,9 @@ nhlmosteffectivetotal1 <- nhlmosteffective %>%
 
 ## Skaters
 
-INSERT PHOTO
+```{r, out.width="40%", fig.align="center"}
+knitr::include_graphics("pictures/skatergifds.gif")
+```
 
 Once I created the variable I aimed to explore what countries produce the best valued picks. To gauge this I averaged the value of each pick for each country represented in the data set and the results are shown in the figure below:
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
