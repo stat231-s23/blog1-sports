@@ -590,7 +590,8 @@ top_valuepicks_print <- top_valuepicks %>%
   rename(State = 'ID')
 
 final_valuepicks_display <- top_valuepicks_print[, c("Pick", "Franchise", "Player", "College", "NBA Team(s)", "State", "valuepick")]%>%
-  rename(NBA_Team = 'NBA Team(s)')
+  rename(NBA_Team = 'NBA Team(s)')%>%
+  mutate(across(is.numeric, round, digits = 3))
 final_valuepicks_display%>%
   select(Player, Franchise, Pick, College, NBA_Team, State, valuepick) %>% 
   datatable(colnames = c("Name", "Position", "Overall", "School", "Year"),
