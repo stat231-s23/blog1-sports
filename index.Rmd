@@ -567,8 +567,12 @@ top_valuepicks_print <- top_valuepicks %>%
   rename(Pick = 'Pk')%>%
   rename(State = 'ID')
 
-final_valuepicks_display <- top_valuepicks_print[, c("Pick", "Franchise", "Player", "College", "NBA Team(s)", "State", "valuepick")]
-print(Valuepicks_display)
+final_valuepicks_display <- top_valuepicks_print[, c("Pick", "Franchise", "Player", "College", "NBA Team(s)", "State", "valuepick")]%>%
+  select(Name, Position, Overall, School, Year,) %>% 
+  datatable(colnames = c("Name", "Position", "Overall", "School", "Year"),
+            rownames = head(final_valuepicks_display),
+            filter = 'top',
+            options = list(pageLength = 10, autoWidth = TRUE))
 ```
 ## Analysis
   
