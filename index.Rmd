@@ -600,6 +600,6 @@ final_valuepicks_display%>%
 
 # References
 https://www.hockey-reference.com/about/point_shares.html
- 
+
 
 
