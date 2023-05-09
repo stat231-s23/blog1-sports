@@ -561,7 +561,7 @@ ggplot(value_pick_nba, aes(geometry=geom, fill = finalMeanValuePick)) +
   scale_fill_viridis_c(option = "blues", direction = -1)
 ```
 
-```{r echo=FALSE, message=FALSE, warning = FALSE}
+```{r echo=FALSE, message=FALSE}
 #creating a table to display the top 3 value picks from each State
 
 top_valuepicks <- nba_team_states %>%
@@ -579,7 +579,12 @@ top_valuepicks_print <- top_valuepicks %>%
   rename(Pick = 'Pk')%>%
   rename(State = 'ID')
 
-final_valuepicks_display <- top_valuepicks_print[, c("Pick", "Franchise", "Player", "College", "NBA Team(s)", "State", "valuepick")]
+final_valuepicks_display <- top_valuepicks_print[, c("Pick", "Franchise", "Player", "College", "NBA Team(s)", "State", "valuepick")]%>%
+  select(Name, Position, Overall, School, Year,) %>% 
+  datatable(colnames = c("Name", "Position", "Overall", "School", "Year"),
+            rownames = head(final_valuepicks_display),
+            filter = 'top',
+            options = list(pageLength = 10, autoWidth = TRUE))
 ```
 ## Analysis
   
