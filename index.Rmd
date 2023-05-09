@@ -628,24 +628,24 @@ Our study could be improved in multiple ways, we only examined a few variables a
 # References
 
 <!-- Dataset -->
-OP, Matt (September 2022), "NHL Draft Hockey Player Data (1963 - 2022)", *Kaggle*, available at <https://www.kaggle.com/datasets/mattop/nhl-draft-hockey-player-data-1963-2022>.
+- OP, Matt (September 2022), "NHL Draft Hockey Player Data (1963 - 2022)", *Kaggle*, available at <https://www.kaggle.com/datasets/mattop/nhl-draft-hockey-player-data-1963-2022>.
 
 <!-- Dataset -->
-Lichtenstein, Jack (January 2021), "ESPN NFL draft prospect data" (Version 1), *Kaggle*, available at <https://www.kaggle.com/datasets/jacklichtenstein/espn-nfl-draft-prospect-data?select=nfl_draft_prospects.csv>.
+- Lichtenstein, Jack (January 2021), "ESPN NFL draft prospect data" (Version 1), *Kaggle*, available at <https://www.kaggle.com/datasets/jacklichtenstein/espn-nfl-draft-prospect-data?select=nfl_draft_prospects.csv>.
 
 <!-- Dataset -->
-Wieland, Ben (April 2022), "20 Years of NBA Draft Data" (Version 1), *Kaggle*, available at <https://www.kaggle.com/datasets/benwieland/nba-draft-data>.
+- Wieland, Ben (April 2022), "20 Years of NBA Draft Data" (Version 1), *Kaggle*, available at <https://www.kaggle.com/datasets/benwieland/nba-draft-data>.
 
 <!-- Website -->
-Hockey References, "Point Share Calculations" available at <https://www.hockey-reference.com/about/point_shares.html>.
+- Hockey References, "Point Share Calculations" available at <https://www.hockey-reference.com/about/point_shares.html>.
 
 <!-- R package -->
-Xie Y, Cheng J, Tan X (2022). "DT: A Wrapper of the JavaScript Library 'DataTables'," R package version 0.24, available at <https://CRAN.R-project.org/package=DT>.
+- Xie Y, Cheng J, Tan X (2022). "DT: A Wrapper of the JavaScript Library 'DataTables'," R package version 0.24, available at <https://CRAN.R-project.org/package=DT>.
 
 <!-- R package -->
-Deckmyn, Alex (2022). "maps: Draw Geographical Maps," R package version 3.4.1, available at <https://cran.r-project.org/web/packages/maps/index.html>.
+- Deckmyn, Alex (2022). "maps: Draw Geographical Maps," R package version 3.4.1, available at <https://cran.r-project.org/web/packages/maps/index.html>.
 
 <!-- R package -->
-Cheng Joe (2023). "leaflet: Create Interactive Web Maps with the JavaScript 'Leaflet' Library," R package version 2.1.2, available at <https://cran.r-project.org/web/packages/leaflet/index.html>.
+- Cheng Joe (2023). "leaflet: Create Interactive Web Maps with the JavaScript 'Leaflet' Library," R package version 2.1.2, available at <https://cran.r-project.org/web/packages/leaflet/index.html>.
 
 
