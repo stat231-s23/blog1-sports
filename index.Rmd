@@ -313,6 +313,11 @@ Other notable results:
 
 # NFL 
 
+```{r, out.width="80%", fig.align="center"}
+knitr::include_graphics("pictures/1210663154.0.jpg")
+```
+
+
 The NFL draft process occurs when NFL teams pick players, often attending and playing in colleges and universities across the country. The pattern that most typically occurs is the best college football players in the country are often picked in the first couple of rounds. For example, the first player picked in the first round of the draft is likely very talented and highly sought-after. A player’s performance at their college or university is an important consideration for how likely, or quickly they will be picked by an NFL team. Something to consider when looking at players drafted in the NFL, and their corresponding college, is whether there are certain college football teams that produce some of the first picks in the NFL draft. Throughout this analysis we can determine which U.S. states produce some of the top overall NFL draft picks over fifteen years. This information can help us identify states with the top college football players, as well as determine if there are any correlations between the state a player went to school in and the NFL team they were drafted to. 
 
 The data below represents the NFL draft process over a fifteen year period (2006 to 2021). Including in this data included players' names, school they attended, NFL team they were drafted to, the overall pick of each player (ranged 1-32), and the year players were drafted. The map below specifically looks at players' colleges and universities in states across the country and that players' corresponding overall pick number. 
