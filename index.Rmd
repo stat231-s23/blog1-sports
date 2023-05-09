@@ -262,7 +262,7 @@ In the second graph that described goalies, the number for value of pick is much
 In terms of powerhouse teams no real country stood out from the pack. The only result that did stand out to me was Russia being at the bottom of the leaderboard. This was surprising to me because in the NHL currently a lot of the top goalies are from Russia, but as made apparent from the map this was not always the case and in recent years there has been a shift in the development of Russian goaltending for them to produce better goaltenders.
 
 ## Team
-The final observation I wanted to look at was which teams make the best valued picks across the NHL. I did not filter out just to successful players because when it comes to teams picking players I wanted to look at the overall body of work of the team rather than just the successes. For the metric used to evaluate the best teams I just used the win shares variable because I thought this would give me the best look at both goalies and skaters combined when it comes to just looking at teams.
+The final observation I wanted to look at was which teams make the best valued picks across the NHL. I did not filter out just to successful players because when it comes to teams picking players I wanted to look at the overall body of work of the team rather than just the successes. For the metric used to evaluate the best teams, I just used the win shares variable because I thought this would give me the best look at both goalies and skaters combined when it comes to just looking at teams.
 
 The results of my findings are shown in the table below:
 ```{r echo=FALSE, warning = FALSE}
