@@ -153,8 +153,8 @@ playerworldranking <- worldtotalmap %>%
   st_as_sf()
 
  
-my_palette <- colorQuantile(rev(viridis::viridis(3))
-                  , domain =  playerworldranking$avgpickvalue, n=5)
+my_palette <- colorNumeric(palette = "viridis"
+                  , domain =  playerworldranking$avgpickvalue)
 
 leaflet(data = playerworldranking) %>% 
   #addTiles() %>%
@@ -172,8 +172,7 @@ leaflet(data = playerworldranking) %>%
     addLegend(pal = my_palette,
             values = playerworldranking$avgpickvalue,
            position = "topright",
-           title = "Best Valued Skaters Drafted in NHL
-            <br> (Based on Value of Pick and Home Country)", opacity = 1)
+           title = "Goalie Value In NHL <br> (Successful Players)", opacity = 1)
 
 ```
 
@@ -234,7 +233,7 @@ goalieworldranking <- goalieworldmap %>%
   st_as_sf()
 
  
-my_palette <- colorQuantile(rev(viridis::viridis(4))
+my_palette <- colorNumeric(palette = "viridis"
                   , domain =  goalieworldranking$avgpickvalue, n=5)
 
 leaflet(data = goalieworldranking) %>% 
@@ -253,8 +252,7 @@ leaflet(data = goalieworldranking) %>%
     addLegend(pal = my_palette,
             values = goalieworldranking$avgpickvalue,
            position = "topright",
-           title = "Best Valued Skaters Drafted in NHL
-            <br> (Based on Value of Pick and Home Country)", opacity = 1)
+           title = "Goalie Value In NHL <br> (Successful Players)", opacity = 1)
 
 
 ```
