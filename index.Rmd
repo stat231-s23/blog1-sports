@@ -659,8 +659,6 @@ Our study could be improved in multiple ways, we only examined a few variables a
 <!-- R package -->
 - Cheng Joe (2023). "leaflet: Create Interactive Web Maps with the JavaScript 'Leaflet' Library," R package version 2.1.2, available at <https://cran.r-project.org/web/packages/leaflet/index.html>.
 
-<!-- Dataset -->
-https://www.kaggle.com/datasets/benwieland/nba-draft-data
 
 
 
