@@ -592,6 +592,30 @@ final_valuepicks_display%>%
 
 
 # Final Thoughts Of Results
+Based on exploring the three different sports, each sport produces different results and each sport is hard to compare based on the process that each is conducted. Each sport has its own intricacies that you have to take into account. For example, in the NBA and NFL players have to declare to be included in the draft while the NHL can choose anyone regardless if they declare or not.
+
+Each observation we conducted was particularly interesting and applies to the casual fan and the front office of each of the major sports teams. Here are some of the interesting findings for each sport:
+
+NHL
+
+- As an overall body of work, countries like the United States and Canada may not produce as valuable of picks as countries in Europe. This should show general managers in the NHL that they should start taking more chances on players overseas that may have a chance to pan out even if they have to wait a few years to get them because many end up becoming impactful players that bolster franchises.
+
+- Owners should look at whether or not their general managers are making useful picks in the draft. If a team is consistently not making a long playoff run they should look whether the players they drafted match up against the other teams across the league. Because based on the data, teams that have been at the bottom of the standings consistently and have not won a championship sometimes tend to be drafting poorly. Teams can use this data to determine where to look for players that will perform at the highest level on average.
+
+NFL
+
+- General managers can focus their attention more towards the schools in New York, Oregon, Wyoming, and Utah when recruiting players because these states have historically produced the most first round draft picks. This can save these front office members time in the long run because these schools on average will produce the most players.
+
+- Front office members can stay away from the upper Northeast region because there has not been any players that have been drafted in the first round and if they are looking for impact players they can save time and look elsewhere.
+
+NBA
+F
+
+
+
+Even though this data is useful there are some limitations to the findings. For example, it is hard to judge the intangibles of a player from this data. It is difficult to generalize that if historically players that originate from a certain region pan out that they will continue. This is because there aren't always the same coaches in the regions and the training may change over the years so new powerhouses can emerge. Also, you cannot take all of these findings literally. Just because on average some places may not produce the best valued picks there are always generational talents that emerge. For example, in the NHL dataset Connor Mcdavid who is currently the best player in the NHL by a wide margin is not at the top of the rankings for being the best valued. This is because he was the number one overall pick and does not get the same leniency that a player that was picked 100th and is a consistent player. It doesn’t mean that the Edmonton Oilers should have passed on a generational talent to get a player that they were unsure of. 
+
+Our study could be improved in multiple ways, we only examined a few variables and how they interacted with each other. There are many more factors that occur in the overall value of a player more than just points or win shares. General managers have to look at more to evaluate a player when bringing them into a franchise. But some of these factors like attitude have no way of being measured and trying to find a metric for a player and how they interact and support teammates could be a movement to a stat that would be useful.
 
 
 
